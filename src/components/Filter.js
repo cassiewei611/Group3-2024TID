@@ -27,6 +27,7 @@ const Filter = ({ onFilterChange }) => {
       />
 
       <select style={selectStyle} value={eventType} onChange={(e) => { setEventType(e.target.value); handleFilterChange(); }}>
+        <option value="All pet"> All pet</option>
         <option value="Dog">Dog</option>
         <option value="Cat">Cat</option>
         <option value="Bird">Bird</option>
