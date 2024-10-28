@@ -1,9 +1,13 @@
-import React from 'react';
+// src/App.js
+import React from "react";
+import NavBar from "./components/NavBar";
+import CreateEvent from "./pages/CreateEvent";
 
 function App() {
   return (
     <div>
-      {/* Your App Content */}
+      <NavBar />
+      <CreateEvent />
     </div>
   );
 }
