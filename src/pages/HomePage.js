@@ -5,8 +5,8 @@ import Filter from '../components/Filter';
 
 function HomePage() {
   const [events, setEvents] = useState([
-    { id: 1, image: '/images/event1.jpg', title: 'Dog Meetup', date: 'Nov 15', time: '10:00 AM', city: 'Copenhagen', type: 'Dog' },
-    { id: 2, image: 'images/event2.jpg', title: 'Cat Workshop', date: 'Nov 8', time: '2:00 PM', city: 'Aarhus', type: 'Cat' },
+    { id: 1, image: '/images/event1.jpg', title: 'Dog Meetup', date: '2024-11-10', time: '10:00 AM', city: 'Copenhagen', type: 'Dog' },
+    { id: 2, image: 'images/event2.jpg', title: 'Cat Workshop', date: '2024-11-12', time: '2:00 PM', city: 'Aarhus', type: 'Cat' },
     // Additional events...
   ]);
 
@@ -27,9 +27,9 @@ function HomePage() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={pageContainerStyle}>
       <Filter onFilterChange={handleFilterChange} />
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+      <div style={eventsContainerStyle}>
         {filteredEvents.map(event => (
           <EventCard key={event.id} event={{ ...event, onSave: handleSaveEvent }} />
         ))}
@@ -37,5 +37,19 @@ function HomePage() {
     </div>
   );
 }
-  export default HomePage; 
+
+const pageContainerStyle = {
+  display: 'flex',
+  gap: '20px',
+  padding: '20px',
+};
+
+const eventsContainerStyle = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '16px',
+    flex: 1,
+  };
+
+export default HomePage; 
   
