@@ -1,14 +1,12 @@
 // HomePage.js
 import React, { useState } from 'react';
-
-
 import EventCard from '../components/EventCard';
 import Filter from '../components/Filter';
 
 function HomePage() {
   const [events, setEvents] = useState([
-    { id: 1, image: 'event1.jpg', title: 'Dog Meetup', date: '2024-11-10', time: '10:00 AM', city: 'Copenhagen', type: 'Dog' },
-    { id: 2, image: 'event2.jpg', title: 'Cat Workshop', date: '2024-11-12', time: '2:00 PM', city: 'Aarhus', type: 'Cat' },
+    { id: 1, image: '/images/event1.jpg', title: 'Dog Meetup', date: 'Nov 15', time: '10:00 AM', city: 'Copenhagen', type: 'Dog' },
+    { id: 2, image: 'images/event2.jpg', title: 'Cat Workshop', date: 'Nov 8', time: '2:00 PM', city: 'Aarhus', type: 'Cat' },
     // Additional events...
   ]);
 
