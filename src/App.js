@@ -1,9 +1,11 @@
+// src/App.js
 import React from 'react';
+import EventDetailPage from './pages/EventDetailPage';
 
 function App() {
   return (
-    <div>
-      {/* Your App Content */}
+    <div className="App">
+      <EventDetailPage />
     </div>
   );
 }
