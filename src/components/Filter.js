@@ -1,21 +1,19 @@
-// Filter.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Filter = ({ onFilterChange }) => {
   const [city, setCity] = useState('');
   const [date, setDate] = useState('');
   const [eventPetType, setEventPetType] = useState('');
 
-  const handleFilterChange = () => {
-    onFilterChange({ city, date, eventPetType });
-  };
+  // Use useEffect to call onFilterChange when any filter value changes
+  useEffect(() => {
+    onFilterChange({ city, date, eventType: eventPetType });
+  }, [city, date, eventPetType, onFilterChange]);
 
   return (
     <div style={filterContainerStyle}>
-      
-
       <label style={labelStyle}>City</label>
-      <select style={selectStyle} value={city} onChange={(e) => { setCity(e.target.value); handleFilterChange(); }}>
+      <select style={selectStyle} value={city} onChange={(e) => setCity(e.target.value)}>
         <option value="">All Cities</option>
         <option value="Copenhagen">Copenhagen</option>
         <option value="Aarhus">Aarhus</option>
@@ -26,12 +24,12 @@ const Filter = ({ onFilterChange }) => {
       <input
         type="date"
         value={date}
-        onChange={(e) => { setDate(e.target.value); handleFilterChange(); }}
+        onChange={(e) => setDate(e.target.value)}
         style={inputStyle}
       />
 
       <label style={labelStyle}>Pet Type</label>
-      <select style={selectStyle} value={eventPetType} onChange={(e) => { setEventPetType(e.target.value); handleFilterChange(); }}>
+      <select style={selectStyle} value={eventPetType} onChange={(e) => setEventPetType(e.target.value)}>
         <option value="">All pets</option>
         <option value="Dog">Dog</option>
         <option value="Cat">Cat</option>

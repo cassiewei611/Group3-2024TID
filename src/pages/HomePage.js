@@ -1,5 +1,5 @@
 // HomePage.js
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import EventCard from '../components/EventCard';
 import Filter from '../components/Filter';
 
@@ -17,7 +17,7 @@ function HomePage() {
 
   const [filteredEvents, setFilteredEvents] = useState(events);
 
-  const handleFilterChange = (filters) => {
+  const handleFilterChange = useCallback((filters) => {
     const { city, date, eventType } = filters;
     const filtered = events.filter((event) =>
       (!city || event.city === city) &&
@@ -25,7 +25,9 @@ function HomePage() {
       (!eventType || event.type === eventType)
     );
     setFilteredEvents(filtered);
-  };
+    // Step 4: Log filtered events
+    console.log("Filtered Events:", filtered);
+  }, [events]);
 
   const handleSaveEvent = (id) => {
     console.log(`Event ${id} saved`);
