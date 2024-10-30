@@ -12,7 +12,7 @@ const Filter = ({ onFilterChange }) => {
 
   return (
     <div style={filterContainerStyle}>
-      <h3 style={headerStyle}>Filter Events</h3>
+      
 
       <label style={labelStyle}>City</label>
       <select style={selectStyle} value={city} onChange={(e) => { setCity(e.target.value); handleFilterChange(); }}>
@@ -57,18 +57,24 @@ const headerStyle = {
   marginBottom: '10px',
   color: '#333',
   fontSize: '18px',
+  fontFamily: 'Arial',
+  
 };
 
 const labelStyle = {
-  fontSize: '14px',
-  color: '#666',
+  fontSize: '16px',
+  color: '#333',
+  fontFamily: 'Quicksand',
+  fontWeight: 'bold',
 };
 
 const selectStyle = {
   padding: '8px',
+  color:'#333',
   borderRadius: '4px',
   border: '1px solid #ccc',
   fontSize: '14px',
+  fontFamily: 'Open Sans',
 };
 
 const inputStyle = {
@@ -76,6 +82,7 @@ const inputStyle = {
   borderRadius: '4px',
   border: '1px solid #ccc',
   fontSize: '14px',
+  fontFamily: 'Open Sans',
 };
 
 export default Filter;
