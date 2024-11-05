@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Comment from './Comment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import Button from './Button';
 import './CommentsSection.css';
 
 const CommentsSection = () => {
@@ -60,7 +61,11 @@ const CommentsSection = () => {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                 />
-                <button className="send-button" onClick={handleSend}>Send</button>
+                <Button
+                    onClick={handleSend}
+                    label="Send"
+                    className="send-button"
+                />
             </div>
         </div>
     );
