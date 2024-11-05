@@ -30,8 +30,7 @@ const ProfileForm = () => {
 
   return (
     <div className="form-container">
-      {/* Upload Section */}
-      <div className="upload-section">Upload</div>
+      <button className="upload-button">Upload</button>
 
       {/* Form Header */}
       <div className="form-header">Create An Event</div>
