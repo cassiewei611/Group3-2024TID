@@ -20,7 +20,7 @@
     border-radius: 10px;
   }
   
-  .button-image {
+  .button-image { 
     height: 60px; /* Keep the image size the same */
     width: auto;  /* Maintain aspect ratio */
     border-radius: 10px;
