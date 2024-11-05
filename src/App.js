@@ -1,13 +1,14 @@
 // src/App.js
-import React from 'react';
-import NavBar from './components/NavBar';
-import EventDetailPage from './pages/EventDetailPage';
+import React from "react";
+import NavBar from "./components/NavBar";
+import CreateEvent from "./pages/CreateEvent";
+import EventDetail from "./pages/EventDetailPage";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <NavBar />
-      <EventDetailPage />
+      <CreateEvent />
     </div>
   );
 }
