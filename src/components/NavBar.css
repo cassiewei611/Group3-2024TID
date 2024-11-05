@@ -1,33 +1,39 @@
 /* src/components/NavBar.css */
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #6D5D4B;
-  }
-  
-  .logo-image {
-    height: 60px; /* Adjust size as needed */
-    width: auto;   /* Maintain aspect ratio */
-  }
-  
-  .navbar-button {
-    padding: 0; /* Enlarge hover area without changing image size */
-    cursor: pointer;
-    transition: filter 0.3s ease; /* Smooth transition */
-    border-radius: 10px;
-  }
-  
-  .button-image {
-    height: 60px; /* Keep the image size the same */
-    width: auto;  /* Maintain aspect ratio */
-    border-radius: 10px;
-  }
-  
-  /* Hover effect */
-  .navbar-button:hover {
-    filter: brightness(0.8); /* Darken on hover */
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #6D5D4B;
+}
+
+.logo-image {
+  height: 60px;
+  /* Adjust size as needed */
+  width: auto;
+  /* Maintain aspect ratio */
+}
+
+.navbar-button {
+  padding: 0;
+  /* Enlarge hover area without changing image size */
+  cursor: pointer;
+  transition: filter 0.3s ease;
+  /* Smooth transition */
+  border-radius: 10px;
+}
+
+.button-image {
+  height: 60px;
+  /* Keep the image size the same */
+  width: auto;
+  /* Maintain aspect ratio */
+  border-radius: 10px;
+}
+
+/* Hover effect */
+.navbar-button:hover {
+  filter: brightness(0.8);
+  /* Darken on hover */
+}

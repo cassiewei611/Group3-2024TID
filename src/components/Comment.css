@@ -1,0 +1,38 @@
+.comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.comment-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-text {
+    flex-grow: 1;
+}
+
+.comment-actions {
+    font-size: 0.9rem;
+}
+
+.delete-comment-link {
+    cursor: pointer;
+    color: #007bff;
+    margin-left: auto;
+}
+
+.delete-comment-link:hover {
+    text-decoration: underline;
+}

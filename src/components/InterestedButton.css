@@ -1,0 +1,34 @@
+.interested-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6D5D4B;
+    color: #E6DBCB;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.5rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.interested-button:hover {
+    background-color: #5a402d;
+}
+
+.star-icon {
+    font-size: 1.5rem;
+    /* 设置图标大小与文字一致 */
+    margin-left: 0.5rem;
+    /* 添加图标和文字之间的间距 */
+    transition: transform 0.3s ease;
+}
+
+.interested-button:active .star-icon {
+    transform: scale(1.1);
+    /* 点击时略微放大图标 */
+}
