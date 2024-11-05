@@ -1,4 +1,8 @@
 import React from "react";
+<<<<<<< HEAD
+=======
+import "../pages/LoginPage.css"; // Use the existing CSS for button styles
+>>>>>>> kenji
 
 const Button = ({ onClick, label, className }) => {
   return (
