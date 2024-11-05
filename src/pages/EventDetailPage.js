@@ -8,7 +8,6 @@ import NavBar from '../components/NavBar';
 const EventDetailPage = () => {
     return (
         <div className="event-detail-page">
-            <NavBar />
             <div className="event-detail-page-container">
                 <div className="event-content">
                     <div className="event-picture-container">

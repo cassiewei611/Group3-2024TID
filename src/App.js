@@ -10,9 +10,6 @@ function App() {
   return (
     <div>
       <NavBar />
-      <LoginPage />
-      <CreateEvent />
-      <EventDetailPage />
       <HomePage />
     </div>
   )
