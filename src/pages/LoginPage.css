@@ -1,14 +1,9 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Quicksand:wght@700&display=swap');
 
-/* Global styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
-body, html {
+body,
+html {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   display: flex;
@@ -30,7 +25,8 @@ body, html {
   background-color: #f8f3eb;
 }
 
-.left-box, .right-box {
+.left-box,
+.right-box {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -86,17 +82,21 @@ body, html {
 /* Title styling */
 .login-title {
   font-family: 'Quicksand', sans-serif;
-  font-size: 32px; /* Increase the font size */
+  font-size: 32px;
+  /* Increase the font size */
   font-weight: 700;
   color: #6d5d4b;
-  margin-bottom: 20px; /* Adjust space below the title as needed */
+  margin-bottom: 20px;
+  /* Adjust space below the title as needed */
   text-transform: uppercase;
   text-align: center;
-  text-decoration: underline; /* Adds underline to the title */
+  text-decoration: underline;
+  /* Adds underline to the title */
 }
 
 /* Input boxes */
-.username-inputbox, .password-inputbox {
+.username-inputbox,
+.password-inputbox {
   width: 100%;
   margin-bottom: 20px;
 }
@@ -112,7 +112,8 @@ body, html {
 }
 
 /* Button styling */
-.login-button, .signup-button {
+.login-button,
+.signup-button {
   font-family: 'Quicksand', sans-serif;
   font-weight: 700;
   width: 100%;
