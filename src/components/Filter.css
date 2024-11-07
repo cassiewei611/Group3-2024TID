@@ -1,0 +1,43 @@
+.filterContainerStyle  {
+    display: 'flex';
+    flexDirection: 'column';
+    gap: '12px';
+    padding: '20px';
+    width: '200px';
+    backgroundColor: '#f9f9f9';
+    borderRadius: '8px';
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)';
+  };
+  
+.headerStyle {
+    marginBottom: '10px';
+    color: '#333';
+    fontSize: '18px';
+    fontFamily: 'Arial';
+    
+  };
+  
+.labelStyle {
+    fontSize: '16px';
+    color: '#333';
+    fontFamily: 'Quicksand';
+    fontWeight: 'bold';
+  };
+  
+.selectStyle {
+    padding: '8px';
+    color:'#333';
+    borderRadius: '4px';
+    border: '1px solid #ccc';
+    fontSize: '14px';
+    fontFamily: 'Open Sans';
+  };
+  
+.inputStyle {
+    padding: '8px';
+    borderRadius: '4px';
+    border: '1px solid #ccc';
+    fontSize: '14px';
+    fontFamily: 'Open Sans';
+  };
+  
