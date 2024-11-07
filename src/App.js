@@ -9,7 +9,7 @@ function App() {
   return (
     <div>
       <NavBar />
-      <EventDetail />
+      <HomePage/>
     </div>
   );
 }
