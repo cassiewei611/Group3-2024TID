@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Filter.css'
+import './Filter.css';
 
 const Filter = ({ onFilterChange }) => {
   const [city, setCity] = useState('');
@@ -21,7 +21,7 @@ const Filter = ({ onFilterChange }) => {
         <option value="Odense">Odense</option>
       </select>
 
-      <label style={labelStyle}>Date</label>
+      <label className='labelStyle'>Date</label>
       <input
         type="date"
         value={date}
@@ -30,7 +30,7 @@ const Filter = ({ onFilterChange }) => {
       />
 
       <label className='labelStyle'>Pet Type</label>
-      <select className='electStyle' value={eventPetType} onChange={(e) => setEventPetType(e.target.value)}>
+      <select className='selectStyle' value={eventPetType} onChange={(e) => setEventPetType(e.target.value)}>
         <option value="">All pets</option>
         <option value="Dog">Dog</option>
         <option value="Cat">Cat</option>

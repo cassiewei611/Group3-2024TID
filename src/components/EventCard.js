@@ -12,11 +12,15 @@ const formatDay = (date) => {
   }
 
 const EventCard = ({ event }) => {
+  const handleSend = () => {
+    // Define the functionality for handleSend here
+    console.log(`Sending information about the event: ${event.title}`);
+}; 
   return (
     <div className='cardContainer'>
         <div className='imageContainer'>
             <img src={event.image} className='image' />
-            < Button onClick={() => handleSend(event)} className="starButton">☆</Button>
+            <Button onClick={handleSend} label="☆" className="starButton"/>
         </div>
         <div className='contentContainer'>
             <div className='dateContainer'>
