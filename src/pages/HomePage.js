@@ -1,7 +1,7 @@
-// HomePage.js
 import React, { useCallback, useState } from "react";
 import EventCard from "../components/EventCard";
 import Filter from "../components/Filter";
+import './HomePage.css';
 
 function HomePage() {
   const [events, setEvents] = useState([
@@ -33,7 +33,7 @@ function HomePage() {
       type: "Bird",
     },
     {
-      id: 3,
+      id: 4,
       image: "images/event3.jpg",
       title: "Blackbird watching",
       date: "2024-11-08",
@@ -41,34 +41,7 @@ function HomePage() {
       city: "Odense",
       type: "Bird",
     },
-    {
-      id: 3,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    {
-      id: 3,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    {
-      id: 3,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    // Additional events...
+    // More events here...
   ]);
 
   const [filteredEvents, setFilteredEvents] = useState(events);
@@ -83,7 +56,7 @@ function HomePage() {
           (!eventType || event.type === eventType)
       );
       setFilteredEvents(filtered);
-      // Step 4: Log filtered events
+      // Log filtered events
       console.log("Filtered Events:", filtered);
     },
     [events]
@@ -94,9 +67,9 @@ function HomePage() {
   };
 
   return (
-    <div style={pageContainerStyle}>
+    <div className="homePageContainer">
       <Filter onFilterChange={handleFilterChange} />
-      <div style={eventsContainerStyle}>
+      <div className="eventsContainer">
         {filteredEvents.map((event) => (
           <EventCard
             key={event.id}
@@ -107,18 +80,5 @@ function HomePage() {
     </div>
   );
 }
-
-const pageContainerStyle = {
-  display: "flex",
-  gap: "20px",
-  padding: "20px",
-};
-
-const eventsContainerStyle = {
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "16px",
-  flex: 1,
-};
 
 export default HomePage;
