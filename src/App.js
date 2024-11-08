@@ -8,7 +8,8 @@ import EventDetail from "./pages/EventDetailPage";
 function App() {
   return (
     <div>
-    <LogInPage />
+    <NavBar />
+    <HomePage />
     </div>
   );
 }
