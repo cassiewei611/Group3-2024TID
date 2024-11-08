@@ -6,6 +6,7 @@
     width: 250px; /* Adjust the width as needed */
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
     border-radius: 8px;
     left: 0; /* Aligns the container to the left */
     top: 80px; /* Adds some space from the top of the page */
@@ -15,7 +16,7 @@
     margin-bottom: 10px;
     color: #333;
     font-size: 18px;
-    font-family: Arial;
+    font-family: OpenSans;
 }
 
 .labelStyle {
