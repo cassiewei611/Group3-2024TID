@@ -8,7 +8,7 @@
 
 .filterContainerStyle {
   position: fixed;
-  top: 100px;
+  top: 125px;
   left: 0;
   width: 250px;
   /*height: 100vh;*/
@@ -23,7 +23,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  padding: 20px;
+  padding: 5px;
   flex: 1;
   overflow: auto;
 }
