@@ -132,7 +132,16 @@
   color: white;
 }
 
+
+.login-button:hover {
+  background-color: #aa8c6b;
+}
+
 .signup-button {
   background-color: #4f443a;
   color: white;
+}
+
+.signup-button:hover {
+  background-color: #5a402d;
 }

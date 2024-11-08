@@ -47,12 +47,12 @@ const LoginPage = () => {
             </div>
 
             <Button
-              label="LOGIN"
+              label="Login"
               className="login-button"
               onClick={handleLoginClick}
             />
             <Button
-              label="SIGN UP"
+              label="Sign Up"
               className="signup-button"
               onClick={handleSignUpClick}
             />
