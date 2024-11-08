@@ -1,33 +1,27 @@
-/* HomePage.css */
 
-/* The container that wraps the whole page */
 .homePageContainer {
   display: flex;
   padding: 20px;
   gap: 20px;
 }
 
-/* Style for the Filter container on the left */
+
 .filterContainerStyle {
   position: fixed;
   top: 100px;
   left: 0;
   width: 250px;
-  /* Adjust the width of the filter container */
-  height: 100vh;
+  /*height: 100vh;*/
   padding: 20px;
   background-color: #fff;
-  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
-/* Style for the event card container */
+
 .eventsContainer {
   margin-left: 270px;
-  /* Ensure it has enough space on the left side for the fixed filter */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* 3 cards per row */
   gap: 20px;
   padding: 20px;
   flex: 1;
