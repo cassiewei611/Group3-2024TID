@@ -41,17 +41,28 @@
   }
 
   .filterContainerStyle {
-    position: relative;
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-    /* Add spacing when switching to column layout */
+    position: fixed;
+    top: 130px;
+    left: 0;
+    width: 250px;
+    /* Adjust the width of the filter container */
+    padding: 20px;
+    background-color: #f9f9f9;
+    /*box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);*/
+    z-index: 10;
   }
 
   .eventsContainer {
-    margin-left: 0;
-    grid-template-columns: repeat(2, 1fr);
-    /* 2 cards per row on tablets */
+    margin-left: 270px;
+    /* Ensure it has enough space on the left side for the fixed filter */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 cards per row */
+    gap: 12px !important;
+    /* Add !important for testing */
+    padding: 10px;
+    flex: 1;
+    overflow: auto;
   }
 }
 

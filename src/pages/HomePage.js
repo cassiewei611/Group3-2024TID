@@ -41,6 +41,33 @@ function HomePage() {
       city: "Odense",
       type: "Bird",
     },
+    {
+      id: 5,
+      image: "images/event3.jpg",
+      title: "Blackbird watching",
+      date: "2024-11-08",
+      time: "6:00 PM",
+      city: "Odense",
+      type: "Bird",
+    },
+    {
+      id: 6,
+      image: "images/event3.jpg",
+      title: "Blackbird watching",
+      date: "2024-11-08",
+      time: "6:00 PM",
+      city: "Odense",
+      type: "Bird",
+    },
+    {
+      id: 7,
+      image: "images/event3.jpg",
+      title: "Blackbird watching",
+      date: "2024-11-08",
+      time: "6:00 PM",
+      city: "Odense",
+      type: "Bird",
+    }
     // More events here...
   ]);
 
