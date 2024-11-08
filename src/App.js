@@ -9,8 +9,7 @@ import LogInPage from "./pages/LoginPage";
 function App() {
   return (
     <div>
-      <NavBar />
-      <HomePage />
+    <LogInPage />
     </div>
   );
 }

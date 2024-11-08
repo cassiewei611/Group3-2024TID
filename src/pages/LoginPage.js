@@ -15,26 +15,43 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container">
-      <div className="left-box">
-        <img src={mainPicture} alt="Main" className="main-picture" />
-        <img src={logo} alt="Logo" className="logo" />
-      </div>
-      <div className="right-box">
-        <div className="login-box">
-          <h2 className="login-title">login</h2>
-          
+    <div className="login-page-wrapper">
+      <div className="login-container">
+        <div className="login-left-box">
+          <img src={mainPicture} alt="Main" className="login-main-picture" />
+          <img src={logo} alt="Logo" className="login-logo" />
+        </div>
+        <div className="login-right-box">
+          <div className="login-box">
+            <h2 className="login-title">login</h2>
 
-          <div className="username-inputbox">
-            <input type="text" placeholder="Username" className="input-field" />
+            <div className="login-username-inputbox">
+              <input
+                type="text"
+                placeholder="Username"
+                className="login-input-field"
+              />
+            </div>
+
+            <div className="login-password-inputbox">
+              <input
+                type="password"
+                placeholder="Password"
+                className="login-input-field"
+              />
+            </div>
+
+            <Button
+              label="LOGIN"
+              className="login-button"
+              onClick={handleLoginClick}
+            />
+            <Button
+              label="SIGN UP"
+              className="signup-button"
+              onClick={handleSignUpClick}
+            />
           </div>
-
-          <div className="password-inputbox">
-            <input type="password" placeholder="Password" className="input-field" />
-          </div>
-
-          <Button label="LOGIN" className="login-button" onClick={handleLoginClick} />
-          <Button label="SIGN UP" className="signup-button" onClick={handleSignUpClick} />
         </div>
       </div>
     </div>
