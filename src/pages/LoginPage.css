@@ -1,9 +1,13 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Quicksand:wght@700&display=swap');
 
+.login-page-wrapper * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-body,
-html {
+.login-page-wrapper {
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   display: flex;
@@ -15,7 +19,8 @@ html {
   background-color: #f2f2f2;
 }
 
-.container {
+
+.login-container {
   display: flex;
   width: 100vw;
   height: 100vh;
@@ -25,8 +30,8 @@ html {
   background-color: #f8f3eb;
 }
 
-.left-box,
-.right-box {
+.login-left-box,
+.login-right-box {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -34,18 +39,18 @@ html {
   justify-content: center;
 }
 
-.left-box {
+.login-left-box {
   position: relative;
   background-color: #f8f3eb;
 }
 
-.main-picture {
+.login-main-picture {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.logo {
+.login-logo {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -57,7 +62,7 @@ html {
   border-radius: 5px;
 }
 
-.right-box {
+.login-right-box {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,25 +88,22 @@ html {
 .login-title {
   font-family: 'Quicksand', sans-serif;
   font-size: 32px;
-  /* Increase the font size */
   font-weight: 700;
   color: #6d5d4b;
   margin-bottom: 20px;
-  /* Adjust space below the title as needed */
   text-transform: uppercase;
   text-align: center;
   text-decoration: underline;
-  /* Adds underline to the title */
 }
 
 /* Input boxes */
-.username-inputbox,
-.password-inputbox {
+.login-username-inputbox,
+.login-password-inputbox {
   width: 100%;
   margin-bottom: 20px;
 }
 
-.input-field {
+.login-input-field {
   font-family: 'Quicksand', sans-serif;
   width: 100%;
   padding: 12px;
