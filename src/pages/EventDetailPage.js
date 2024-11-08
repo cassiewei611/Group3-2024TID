@@ -10,7 +10,7 @@ const EventDetailPage = () => {
             <div className="event-detail-page-container">
                 <div className="event-content">
                     <div className="event-picture-container">
-                        <EventPicture imagePath="img/OIP.jpeg" />
+                        <EventPicture imagePath="images\event2.jpg" />
                     </div>
 
                     <div className="event-description">

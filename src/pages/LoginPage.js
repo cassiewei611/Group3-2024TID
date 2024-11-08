@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import lineUnderLogin from "../assets/Line-under-login.svg";
 import logo from "../assets/logo.png";
 import mainPicture from "../assets/main-picture.jpeg";
@@ -6,12 +7,16 @@ import "./LoginPage.css";
 import Button from "../components/Button";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const handleLoginClick = () => {
     console.log("Login clicked");
+    navigate("/home"); // Navigate to the Home page
   };
 
   const handleSignUpClick = () => {
     console.log("Sign up clicked");
+    navigate("/signup"); // Navigate to the Sign Up page
   };
 
   return (
