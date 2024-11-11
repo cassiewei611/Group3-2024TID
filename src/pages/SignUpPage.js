@@ -1,8 +1,42 @@
 // src/components/ProfileForm.js
-import React from "react";
+import React, { useState } from "react";
+import Parse from "../services/Parse";
 import "./SignUpPage.css"; // Import the CSS file
 
 const ProfileForm = () => {
+  // State variables to manage input fields
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [description, setDescription] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSignUp = async () => {
+    // Basic validation
+    if (password !== repeatPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
+    try {
+      // Create a new Parse.User
+      const user = new Parse.User();
+      user.set("username", username);
+      user.set("password", password);
+      user.set("email", email);
+      user.set("description", description);
+      user.set("phone", phone);
+
+      // Call Parse signUp function
+      await user.signUp();
+      alert(`User ${username} created successfully!`);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
   return (
     <div className="form-container">
       {/* Upload Section */}
@@ -11,6 +45,9 @@ const ProfileForm = () => {
       {/* Form Header */}
       <div className="form-header">Create New Profile</div>
 
+      {/* Display error message */}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
       {/* Form Fields */}
       <div className="form-section">
         <label>Username:</label>
@@ -18,6 +55,8 @@ const ProfileForm = () => {
           type="text"
           placeholder="max. 14 characters"
           className="input-field"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <label>Password:</label>
@@ -25,6 +64,8 @@ const ProfileForm = () => {
           type="password"
           placeholder="max. 14 characters"
           className="input-field"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <label>Repeat password:</label>
@@ -32,13 +73,17 @@ const ProfileForm = () => {
           type="password"
           placeholder="Can not include Å, Ä, Ö"
           className="input-field"
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
         />
 
         <label>Description:</label>
         <textarea
           placeholder="Write something about yourself..."
           className="input-field"
-          style={{ height: "80px" }} /* inline style for height only */
+          style={{ height: "80px" }}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
 
         <label>E-mail:</label>
@@ -46,6 +91,8 @@ const ProfileForm = () => {
           type="email"
           placeholder="example@user.com"
           className="input-field"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <label>Phone number:</label>
@@ -53,11 +100,15 @@ const ProfileForm = () => {
           type="tel"
           placeholder="Eg. +12 34-568 78 90"
           className="input-field"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
         />
       </div>
 
       {/* Submit Button */}
-      <button className="submit-button">Create user</button>
+      <button className="submit-button" onClick={handleSignUp}>
+        Create user
+      </button>
     </div>
   );
 };
