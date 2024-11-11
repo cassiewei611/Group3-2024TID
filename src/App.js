@@ -6,13 +6,9 @@ import CreateEvent from "./pages/CreateEvent";
 import EventDetail from "./pages/EventDetailPage";
 import Login from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import Parse from 'parse/dist/parse.min.js';
 
-const PARSE_APPLICATION_ID = 'HuKo8mIdhoVZSdGmhrpUrVbbAbpD2Kxfj2ce436R';
-const PARSE_HOST_URL = 'https://parseapi.back4app.com/';
-const PARSE_JAVASCRIPT_KEY = 'QXQMc0yr5pt3G8tlLqldSGPnw9pOJ3XEYL51Yq9';
-Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
-Parse.serverURL = PARSE_HOST_URL;
+// Import Parse to initialize it on app load
+import "./services/Parse";
 
 function App() {
   return (
@@ -28,7 +24,6 @@ function Layout() {
 
   return (
     <>
-
       {!hideNavBarPaths.includes(location.pathname) && <NavBar />}
       <Routes>
         <Route path="/" element={<Login />} />
@@ -39,10 +34,6 @@ function Layout() {
       </Routes>
     </>
   );
-
-
-
-
 }
 
 export default App;
