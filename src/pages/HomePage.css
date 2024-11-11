@@ -24,7 +24,7 @@
   flex-wrap: wrap;
   gap: 5px;
   padding: 5px 40px;
-  flex: 1;
+  flex: 1 1;
   overflow: auto;
 }
 
