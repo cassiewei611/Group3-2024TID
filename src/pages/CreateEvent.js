@@ -3,29 +3,42 @@ import React, { useState } from "react";
 import "./CreateEvent.css"; // Import the CSS file
 
 const locations = ["Copenhagen", "Aarhus", "Odense", "Aalborg"];
+const petTypes = ["Dog", "Cat", "Bird", "Other"];
 
 const ProfileForm = () => {
   const [location, setLocation] = useState("");
-  const [filteredLocations, setFilteredLocations] = useState([]);
+  const [headline, setHeadline] = useState("");
+  const [description, setDescription] = useState("");
+  const [datetime, setDatetime] = useState("");
+  const [eventPetType, setEventPetType] = useState("");
 
   const handleLocationChange = (event) => {
-    const input = event.target.value;
-    setLocation(input);
-
-    // Filter locations based on the input
-    if (input) {
-      const filtered = locations.filter((loc) =>
-        loc.toLowerCase().includes(input.toLowerCase())
-      );
-      setFilteredLocations(filtered);
-    } else {
-      setFilteredLocations([]);
-    }
+    setLocation(event.target.value);
   };
 
-  const handleLocationSelect = (loc) => {
-    setLocation(loc);
-    setFilteredLocations([]);
+  const handleSubmit = () => {
+    // Check if location, datetime, and pet type are selected
+    if (!location) {
+      alert("Please select a location before creating the event.");
+      return;
+    }
+    if (!datetime) {
+      alert("Please select a date and time for the event.");
+      return;
+    }
+    if (!eventPetType) {
+      alert("Please select a pet type for the event.");
+      return;
+    }
+
+    // Logic to create the event goes here
+    console.log("Event created with the following details:", {
+      headline,
+      description,
+      datetime,
+      location,
+      eventPetType,
+    });
   };
 
   return (
@@ -42,48 +55,62 @@ const ProfileForm = () => {
           type="text"
           placeholder="max. 14 characters"
           className="input-field"
+          value={headline}
+          onChange={(e) => setHeadline(e.target.value)}
         />
 
         <label>Description:</label>
         <textarea
           placeholder="Write something about yourself..."
           className="input-field"
-          style={{ height: "80px" }} /* inline style for height only */
+          style={{ height: "80px" }}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
 
-        <label>Date/time:</label>
+        <label>Date and Time</label>
         <input
-          type="text"
-          placeholder="DD/MM/YY hh/mm"
+          type="datetime-local"
+          value={datetime}
+          onChange={(e) => setDatetime(e.target.value)}
           className="input-field"
         />
 
         <label>Location</label>
-        <input
-          type="text"
-          placeholder="Copenhagen/Aarhus/Odense/Aalborg"
-          className="input-field"
+        <select
+          className="input-field selectStyle"
           value={location}
           onChange={handleLocationChange}
-        />
-        {/* Dropdown for filtered locations */}
-        {filteredLocations.length > 0 && (
-          <ul className="dropdown">
-            {filteredLocations.map((loc, index) => (
-              <p
-                key={index}
-                onClick={() => handleLocationSelect(loc)}
-                className="dropdown-item"
-              >
-                {loc}
-              </p>
-            ))}
-          </ul>
-        )}
+          required
+        >
+          <option value="">Select a location</option>
+          {locations.map((loc, index) => (
+            <option key={index} value={loc}>
+              {loc}
+            </option>
+          ))}
+        </select>
+
+        <label>Pet Type</label>
+        <select
+          className="input-field selectStyle"
+          value={eventPetType}
+          onChange={(e) => setEventPetType(e.target.value)}
+          required
+        >
+          <option value="">Select pet type</option>
+          {petTypes.map((pet, index) => (
+            <option key={index} value={pet}>
+              {pet}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Submit Button */}
-      <button className="submit-button">Create Event</button>
+      <button className="submit-button" onClick={handleSubmit}>
+        Create Event
+      </button>
     </div>
   );
 };

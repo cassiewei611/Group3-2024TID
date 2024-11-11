@@ -1,19 +1,16 @@
-/* src/pages/EventDetailPage.css */
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #f8f3eb;
+    background-color: #f8f3eb !important;
 }
 
-/* Overall page styling */
 .event-detail-page-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: 'Open Sans', sans-serif;
     font-size: 1rem;
-    /* Base font size for scaling */
 }
 
 
@@ -77,9 +74,7 @@ body {
 .username {
     color: inherit;
     font-weight: bold;
-    /* 加粗文字 */
     cursor: pointer;
-    /* 鼠标悬停时显示为手型 */
 }
 
 

@@ -1,0 +1,77 @@
+
+.homePageContainer {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+
+.filterContainerStyle {
+  position: fixed;
+  top: 125px;
+  left: 0;
+  width: 250px;
+  /*height: 100vh;*/
+  padding: 20px;
+  background-color: #fff;
+  z-index: 10;
+}
+
+
+.eventsContainer {
+  margin-left: 270px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px 40px;
+  flex: 1 1;
+  overflow: auto;
+}
+
+/* Responsive styles for smaller screens 
+@media (max-width: 1024px) {
+  .homePageContainer {
+    flex-direction: column;
+  }
+
+  .filterContainerStyle {
+    position: fixed;
+    top: 130px;
+    left: 0;
+    width: 250px;
+     Adjust the width of the filter container 
+    padding: 20px;
+    background-color: #f9f9f9;
+    /*box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+
+  .eventsContainer {
+    margin-left: 270px;
+    Ensure it has enough space on the left side for the fixed filter 
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+     3 cards per row 
+    gap: 12px !important;
+     Add !important for testing 
+    padding: 10px;
+    flex: 1;
+    overflow: auto;
+  }
+}
+*/
+@media (max-width: 600px) {
+    .homePageContainer {
+        flex-direction: column;
+    }
+    .filterContainerStyle {
+        position: unset;
+        margin:auto;
+    }
+    .eventsContainer {
+        margin: auto;
+        padding: 5px;
+        align-items: center;
+        justify-content: center;
+  }
+} 
