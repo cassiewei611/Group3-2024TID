@@ -1,6 +1,5 @@
-// src/components/NavBar.js
 import React from "react";
-import "./NavBar.css"; // Import the CSS file
+import "./NavBar.css";
 
 const NavBar = () => {
   return (
@@ -8,7 +7,10 @@ const NavBar = () => {
       <div className="navbar-logo">
         <img src="/img/Petish_logo.png" alt="Logo" className="logo-image" />
       </div>
-      <div className="navbar-button">
+      <div className="create-event">
+        <button className="Create-event-button">Create event +</button>
+      </div>
+      <div className="profile-button">
         <img src="/img/Profile_pic.png" alt="Button" className="button-image" />
       </div>
     </nav>

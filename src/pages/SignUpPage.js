@@ -1,17 +1,13 @@
-// src/components/ProfileForm.js
 import React from "react";
-import "./SignUpPage.css"; // Import the CSS file
+import "./SignUpPages.css";
 
 const ProfileForm = () => {
   return (
     <div className="form-container">
-      {/* Upload Section */}
       <div className="upload-section">Upload</div>
 
-      {/* Form Header */}
       <div className="form-header">Create New Profile</div>
 
-      {/* Form Fields */}
       <div className="form-section">
         <label>Username:</label>
         <input
@@ -38,7 +34,7 @@ const ProfileForm = () => {
         <textarea
           placeholder="Write something about yourself..."
           className="input-field"
-          style={{ height: "80px" }} /* inline style for height only */
+          style={{ height: "80px" }}
         />
 
         <label>E-mail:</label>
@@ -56,7 +52,6 @@ const ProfileForm = () => {
         />
       </div>
 
-      {/* Submit Button */}
       <button className="submit-button">Create user</button>
     </div>
   );

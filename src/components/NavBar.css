@@ -1,33 +1,53 @@
-/* src/components/NavBar.css */
-
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #6D5D4B;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 1rem 2rem; 
+  background-color: #6D5D4B; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
   }
   
   .logo-image {
-    height: 60px; /* Adjust size as needed */
-    width: auto;   /* Maintain aspect ratio */
+    height: 60px; 
+    width: auto;   
   }
   
-  .navbar-button {
-    padding: 0; /* Enlarge hover area without changing image size */
+  .profile-button {
+    padding: 0; 
     cursor: pointer;
-    transition: filter 0.3s ease; /* Smooth transition */
+    transition: filter 0.3s ease; 
     border-radius: 10px;
+    margin-left: 2rem;
+    height: 60px;
+ 
   }
   
+  .Create-event-button
+  {
+    padding: 0; 
+    cursor: pointer;
+    transition: filter 0.3s ease; 
+    border-radius: 10px;
+    border: none;
+    padding: 0.5rem 1rem;
+    background-color:#6D5D4B;
+    font-family: "quicksand";
+    font-size: 20px;
+    color: white;
+    margin-left: 62rem;
+
+  }
+
+  .Create-event-button:hover{
+    filter: brightness(0.8); 
+  }
+
   .button-image { 
-    height: 60px; /* Keep the image size the same */
-    width: auto;  /* Maintain aspect ratio */
+    height: 60px; 
+    width: auto;  
     border-radius: 10px;
   }
   
-  /* Hover effect */
-  .navbar-button:hover {
-    filter: brightness(0.8); /* Darken on hover */
+  .profile-button:hover {
+    filter: brightness(0.8); 
   }
-  
