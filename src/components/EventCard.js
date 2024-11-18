@@ -14,7 +14,7 @@ const formatDay = (date) => {
 
 const EventCard = ({ event }) => {
   const handleSend = () => {
-    
+
     console.log(`Sending information about the event: ${event.title}`);
   }
 

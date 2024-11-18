@@ -1,77 +1,23 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import EventCard from "../components/EventCard";
 import Filter from "../components/Filter";
 import './HomePage.css';
+import { fetchAllEvents } from "../services/Parse";
 
 function HomePage() {
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      image: "/images/event2.jpg",
-      title: "Dog Meetup",
-      date: "2024-11-10",
-      time: "10:00 AM",
-      city: "Copenhagen",
-      type: "Dog",
-    },
-    {
-      id: 2,
-      image: "images/event4.jpg",
-      title: "Cat Workshop",
-      date: "2024-11-12",
-      time: "2:00 PM",
-      city: "Aarhus",
-      type: "Cat",
-    },
-    {
-      id: 3,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    {
-      id: 4,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    {
-      id: 5,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    {
-      id: 6,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    },
-    {
-      id: 7,
-      image: "images/event3.jpg",
-      title: "Blackbird watching",
-      date: "2024-11-08",
-      time: "6:00 PM",
-      city: "Odense",
-      type: "Bird",
-    }
-    // More events here...
-  ]);
+  const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
-  const [filteredEvents, setFilteredEvents] = useState(events);
+  useEffect(() => {
+    const loadEvents = async () => {
+      const fetchedEvents = await fetchAllEvents();
+      setEvents(fetchedEvents);
+      setFilteredEvents(fetchedEvents); // Initially set filtered events to all events
+    };
+
+    loadEvents();
+  }, []);
+
 
   const handleFilterChange = useCallback(
     (filters) => {

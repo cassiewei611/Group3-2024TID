@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import NavBar from "./components/NavBar";
+import HomePage from "./pages/HomePage";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetail from "./pages/EventDetailPage";
 import Login from "./pages/LoginPage";

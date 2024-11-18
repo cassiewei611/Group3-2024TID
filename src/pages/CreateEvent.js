@@ -1,55 +1,98 @@
-// src/components/ProfileForm.js
 import React, { useState } from "react";
-import "./CreateEvent.css"; // Import the CSS file
+import { createEvent } from "../services/Parse"; // Import createEvent function
+import "./CreateEvent.css";
 
 const locations = ["Copenhagen", "Aarhus", "Odense", "Aalborg"];
 const petTypes = ["Dog", "Cat", "Bird", "Other"];
 
-const ProfileForm = () => {
+const ProfileForm = ({ userId }) => {
   const [location, setLocation] = useState("");
   const [headline, setHeadline] = useState("");
   const [description, setDescription] = useState("");
   const [datetime, setDatetime] = useState("");
-  const [eventPetType, setEventPetType] = useState("");
+  const [petType, setPetType] = useState("");
+  const [image, setImage] = useState("");
+  const [imagePreview, setImagePreview] = useState(""); // For displaying preview
 
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
   };
 
-  const handleSubmit = () => {
-    // Check if location, datetime, and pet type are selected
-    if (!location) {
-      alert("Please select a location before creating the event.");
-      return;
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // Set preview image
+      };
+      reader.readAsDataURL(file);
+      setImage(file); // Save the file for submission
     }
-    if (!datetime) {
-      alert("Please select a date and time for the event.");
-      return;
-    }
-    if (!eventPetType) {
-      alert("Please select a pet type for the event.");
+  };
+
+  const handleSubmit = async () => {
+    if (!location || !datetime || !petType) {
+      alert("Please fill in all required fields before creating the event.");
       return;
     }
 
-    // Logic to create the event goes here
-    console.log("Event created with the following details:", {
+    const eventData = {
       headline,
       description,
       datetime,
       location,
-      eventPetType,
-    });
+      petType,
+      image,
+    };
+
+    try {
+      await createEvent(eventData, userId);
+
+      // Show a success alert
+      alert("Event created successfully!");
+
+      // Reset form fields
+      setHeadline("");
+      setDescription("");
+      setDatetime("");
+      setLocation("");
+      setPetType("");
+      setImage("");
+      setImagePreview("");
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("There was an error creating the event. Please try again.");
+    }
   };
+
 
   return (
     <div className="form-container">
-      <button className="upload-button">Upload</button>
+      <div class="upload-container">
+        <div className="upload-button" onClick={() => document.getElementById('image-upload').click()}>
+          <input
+            id="image-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: "none" }} // Hide the file input
+          />
+          {imagePreview ? (
+            <img src={imagePreview} alt="Preview" className="image-preview" />
+          ) : (
+            <span>Upload Image</span>
+          )}
+        </div>
+      </div>
+
+
+
 
       {/* Form Header */}
-      <div className="form-header">Create An Event</div>
+      < div className="form-header" > Create An Event</div >
 
-      {/* Form Fields */}
-      <div className="form-section">
+      {/* Other form fields */}
+      < div className="form-section" >
         <label>Headline:</label>
         <input
           type="text"
@@ -94,8 +137,8 @@ const ProfileForm = () => {
         <label>Pet Type</label>
         <select
           className="input-field selectStyle"
-          value={eventPetType}
-          onChange={(e) => setEventPetType(e.target.value)}
+          value={petType}
+          onChange={(e) => setPetType(e.target.value)}
           required
         >
           <option value="">Select pet type</option>
@@ -105,14 +148,15 @@ const ProfileForm = () => {
             </option>
           ))}
         </select>
-      </div>
+      </div >
 
       {/* Submit Button */}
-      <button className="submit-button" onClick={handleSubmit}>
+      < button className="submit-button" onClick={handleSubmit} >
         Create Event
-      </button>
-    </div>
+      </button >
+    </div >
   );
 };
 
 export default ProfileForm;
+
