@@ -1,3 +1,6 @@
+// Import Parse to initialize it on app load
+import "./services/Parse";
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import NavBar from "./components/NavBar";
@@ -7,9 +10,6 @@ import EventDetail from "./pages/EventDetailPage";
 import Login from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 
-
-// Import Parse to initialize it on app load
-import "./services/Parse";
 
 function App() {
   return (

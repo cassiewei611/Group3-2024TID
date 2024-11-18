@@ -17,7 +17,7 @@ export const fetchAllEvents = async () => {
         // Fetch all events
         const results = await query.find();
 
-        // Map results to a simpler format
+        // Map results to a simpler formats
         return results.map(event => ({
             id: event.id,
             title: event.get("heading"),
@@ -38,20 +38,22 @@ export const createEvent = async (eventData, userId) => {
         const Event = Parse.Object.extend("Event");
         const newEvent = new Event();
 
-        newEvent.set("heading", eventData.headline); // Event title
-        newEvent.set("description", eventData.description); // Event description
-        newEvent.set("datetime", eventData.datetime); // Event date and time
-        newEvent.set("location", eventData.location); // Event location
-        newEvent.set("petType", eventData.eventPetType); // Type of pet related to the event (e.g., Dog, Cat, Bird)
+        newEvent.set("heading", eventData.heading);
+        newEvent.set("description", eventData.description);
+        newEvent.set("datetime", eventData.datetime);
+        newEvent.set("location", eventData.location);
+        newEvent.set("petType", eventData.petType);
 
-        // Set the image URL or file path
-        newEvent.set("image", eventData.image || ""); // Optional, default to empty if not provided
+        // Set the Parse.File object for the image
+        if (eventData.image) {
+            newEvent.set("image", eventData.image); // eventData.image is a Parse.File
+        }
 
         // Set the created_by field with a reference to the User
         const User = Parse.Object.extend("User");
         const userPointer = new User();
-        userPointer.id = userId; // Assuming userId is passed as an argument
-        newEvent.set("created_by", userPointer); // Foreign key reference
+        userPointer.id = userId;
+        newEvent.set("created_by", userPointer);
 
         await newEvent.save();
         console.log("Event created successfully!");
@@ -59,6 +61,7 @@ export const createEvent = async (eventData, userId) => {
         console.error("Error while creating event:", error);
     }
 };
+
 
 
 export const fetchEventDetails = async (eventId) => {

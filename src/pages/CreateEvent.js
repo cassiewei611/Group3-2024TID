@@ -1,58 +1,79 @@
-import React, { useState } from "react";
-import { createEvent } from "../services/Parse"; // Import createEvent function
+import React, { useState, useEffect } from "react";
+import Parse from '../services/Parse';
+import { createEvent } from "../services/Parse";
 import "./CreateEvent.css";
 
 const locations = ["Copenhagen", "Aarhus", "Odense", "Aalborg"];
 const petTypes = ["Dog", "Cat", "Bird", "Other"];
 
-const ProfileForm = ({ userId }) => {
+const ProfileForm = () => {
   const [location, setLocation] = useState("");
-  const [headline, setHeadline] = useState("");
+  const [heading, setHeading] = useState("");
   const [description, setDescription] = useState("");
   const [datetime, setDatetime] = useState("");
   const [petType, setPetType] = useState("");
   const [image, setImage] = useState("");
-  const [imagePreview, setImagePreview] = useState(""); // For displaying preview
+  const [imagePreview, setImagePreview] = useState("");
+
+  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    Parse.User.currentAsync().then(currentUser => {
+      if (currentUser) {
+        setUserId(currentUser.id);
+      } else {
+        console.error("No user logged in");
+      }
+    });
+  }, []);
+
 
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
   };
 
+
   const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]; // Get the selected file
     if (file) {
+      const parseFile = new Parse.File(file.name, file); // Convert to Parse.File
+      setImage(parseFile); // Save the Parse.File object to state
+
+      // Optional: For preview purposes
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Set preview image
+        setImagePreview(reader.result); // Display preview
       };
       reader.readAsDataURL(file);
-      setImage(file); // Save the file for submission
     }
   };
 
   const handleSubmit = async () => {
-    if (!location || !datetime || !petType) {
+    if (!location || !datetime || !petType || !userId) {
       alert("Please fill in all required fields before creating the event.");
       return;
     }
 
+    // Convert datetime string to a Date object
+    const datetimeObject = new Date(datetime);
+
     const eventData = {
-      headline,
+      heading,
       description,
-      datetime,
+      datetime: datetimeObject, // Use the Date object here
       location,
       petType,
       image,
     };
 
+    console.log("Event Data:", eventData);
+
     try {
       await createEvent(eventData, userId);
 
-      // Show a success alert
       alert("Event created successfully!");
 
       // Reset form fields
-      setHeadline("");
+      setHeading("");
       setDescription("");
       setDatetime("");
       setLocation("");
@@ -68,7 +89,7 @@ const ProfileForm = ({ userId }) => {
 
   return (
     <div className="form-container">
-      <div class="upload-container">
+      <div className="upload-container">
         <div className="upload-button" onClick={() => document.getElementById('image-upload').click()}>
           <input
             id="image-upload"
@@ -85,21 +106,16 @@ const ProfileForm = ({ userId }) => {
         </div>
       </div>
 
+      <div className="form-header">Create An Event</div>
 
-
-
-      {/* Form Header */}
-      < div className="form-header" > Create An Event</div >
-
-      {/* Other form fields */}
-      < div className="form-section" >
+      <div className="form-section">
         <label>Headline:</label>
         <input
           type="text"
           placeholder="max. 14 characters"
           className="input-field"
-          value={headline}
-          onChange={(e) => setHeadline(e.target.value)}
+          value={heading}
+          onChange={(e) => setHeading(e.target.value)}
         />
 
         <label>Description:</label>
@@ -148,15 +164,13 @@ const ProfileForm = ({ userId }) => {
             </option>
           ))}
         </select>
-      </div >
+      </div>
 
-      {/* Submit Button */}
-      < button className="submit-button" onClick={handleSubmit} >
+      <button className="submit-button" onClick={handleSubmit}>
         Create Event
-      </button >
-    </div >
+      </button>
+    </div>
   );
 };
 
 export default ProfileForm;
-
