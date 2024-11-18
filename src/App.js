@@ -1,21 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import NavBar from "./components/NavBar";
+import HomePage from "./pages/HomePage";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetail from "./pages/EventDetailPage";
-<<<<<<< HEAD
-import EventDetailPage from "./pages/EventDetailPage";
-
-function App() {
-  return (
-    <div>
-      <NavBar />
-      <CreateEvent />
-    </div>
-=======
 import Login from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-
 
 // Import Parse to initialize it on app load
 import "./services/Parse";
@@ -43,7 +38,6 @@ function Layout() {
         <Route path="/event-detail" element={<EventDetail />} />
       </Routes>
     </>
->>>>>>> 57e7b7e159dfa8f43546af6bcf32aaac85250ce9
   );
 }
 
