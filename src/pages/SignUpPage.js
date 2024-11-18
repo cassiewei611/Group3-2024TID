@@ -1,10 +1,46 @@
-import React from "react";
-import "./SignUpPages.css";
+import React, { useState } from "react";
+import "./SignUpPage.css";
 
 const ProfileForm = () => {
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
   return (
     <div className="form-container">
-      <div className="upload-section">Upload</div>
+      <div className="upload-section" onClick={handleUploadClick}>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="file-input"
+          id="fileInput"
+        />
+        {imagePreview ? (
+          <img
+            src={imagePreview}
+            alt="Profile Preview"
+            className="image-preview"
+          />
+        ) : (
+          "Upload"
+        )}
+      </div>
 
       <div className="form-header">Create New Profile</div>
 
