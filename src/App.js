@@ -11,7 +11,6 @@ import CreateEvent from "./pages/CreateEvent";
 import EventDetail from "./pages/EventDetailPage";
 import Login from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import HomePage from "./pages/HomePage";
 
 // Import Parse to initialize it on app load
 import "./services/Parse";
