@@ -1,59 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { handleParticipation, checkUserInterest } from '../services/Parse';
-import './InterestedButton.css';
+import React, { useState, useEffect } from "react";
+import { handleParticipation, checkUserInterest } from "../services/Parse";
+import "./InterestedButton.css";
 
-const InterestedButton = ({ eventId, userId }) => {
+const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
     const [isInterested, setIsInterested] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // 添加加载状态
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Step 1: 在组件挂载时检查用户是否对该事件感兴趣
+    // Check whether the user is interested in the event
     useEffect(() => {
         const fetchInterestStatus = async () => {
             try {
-                setIsLoading(true); // 开始加载
+                setIsLoading(true);
                 const interested = await checkUserInterest(eventId, userId);
                 setIsInterested(interested);
             } catch (error) {
                 console.error("Error fetching interest status:", error);
             } finally {
-                setIsLoading(false); // 加载结束
+                setIsLoading(false);
             }
         };
         fetchInterestStatus();
     }, [eventId, userId]);
 
+    // Toggle interest status on button click
     const handleClick = async () => {
         try {
             const updatedInterest = await handleParticipation(eventId, userId);
             if (updatedInterest !== null) {
                 setIsInterested(updatedInterest);
+
+                // Call the callback function to update the number of attendees
+                if (updateAttendeesCount) {
+                    await updateAttendeesCount();
+                }
             }
         } catch (error) {
             console.error("Error toggling interest:", error);
         }
     };
 
+    // Button loading state
     if (isLoading) {
         return <button className="interested-button" disabled>Loading...</button>;
     }
 
+    // Button display
     return (
         <button className="interested-button" onClick={handleClick}>
-            Interested
             {isInterested ? (
-                // 实心星星 SVG
-                <svg className="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
+                <>
+                    Interested {/* Change text to reflect current interest */}
+                    {/* Solid star SVG for when interested */}
+                    <svg
+                        className="star-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        width="20px"
+                        height="20px"
+                    >
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                </>
             ) : (
-                // 空心星星 SVG
-                <svg className="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20px" height="20px">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21l1.18-6.86-5-4.87 6.91-.97L12 2z" />
-                </svg>
+                <>
+                    Interested {/* Change text to reflect current interest */}
+                    {/* Hollow star SVG for when not interested */}
+                    <svg
+                        className="star-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        width="20px"
+                        height="20px"
+                    >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21l1.18-6.86-5-4.87 6.91-.97L12 2z" />
+                    </svg>
+                </>
             )}
         </button>
     );
 };
 
 export default InterestedButton;
-

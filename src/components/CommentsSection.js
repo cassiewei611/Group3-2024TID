@@ -1,59 +1,52 @@
-import React, { useState } from 'react';
-import Comment from './Comment';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
 import Button from './Button';
+import Comment from './Comment';
+import { fetchComments, saveComment, handleDelete } from '../services/Parse';
 import './CommentsSection.css';
 
-const CommentsSection = () => {
-    const [comments, setComments] = useState([
-        { commentId: 1, author: "Jakob_Miller", text: "Feel free to ask me questions!" },
-        { commentId: 2, author: "Emily_Hartman", text: "Is there a specific age or breed requirement for the dogs?" },
-        { commentId: 3, author: "Jakob_Miller", text: "Nope, all breeds and ages are welcome to participate!" }
-    ]);
+const CommentsSection = ({ eventId, userId }) => {
+    const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
 
-    // Function to handle sending a new comment
-    const handleSend = () => {
+
+    useEffect(() => {
+        const loadComments = async () => {
+            const loadedComments = await fetchComments(eventId);
+            setComments(loadedComments);
+        };
+        loadComments();
+    }, [eventId]);
+
+
+    const handleSend = async () => {
         if (newComment.trim()) {
-            const newCommentObj = {
-                commentId: comments.length + 1,
-                author: "Current_User",
-                text: newComment
-            };
-            setComments([...comments, newCommentObj]);
-            setNewComment("");
+            const newCommentObj = await saveComment(eventId, userId, newComment);
+            if (newCommentObj) {
+                setComments([...comments, newCommentObj]);
+                setNewComment("");
+            }
         }
     };
 
-    // Function to handle deleting a comment
-    const handleDelete = (commentId) => {
-        const confirmed = window.confirm("Are you sure you want to delete this comment?");
-        if (confirmed) {
+
+    const handleCommentDelete = async (commentId) => {
+        const success = await handleDelete(commentId);
+        if (success) {
             setComments(comments.filter(comment => comment.commentId !== commentId));
         }
     };
 
     return (
         <div className="comments-section">
-            {/* Mapping through comments */}
             {comments.map(comment => (
-                <div key={comment.commentId} className="comment">
-                    <div className="comment-content">
-                        <span className="comment-author">{comment.author}:</span>
-                        <span className="comment-text">{comment.text}</span>
-                    </div>
-                    <div className="comment-actions">
-                        <FontAwesomeIcon
-                            icon={faTrash}
-                            className="delete-icon"
-                            onClick={() => handleDelete(comment.commentId)}
-                        />
-                    </div>
-                </div>
+                <Comment
+                    key={comment.commentId}
+                    commentId={comment.commentId}
+                    author={comment.author}
+                    text={comment.content}
+                    onDelete={handleCommentDelete}
+                />
             ))}
-
-            {/* Comment Input */}
             <div className="comment-input">
                 <input
                     type="text"

@@ -5,27 +5,23 @@ import EventPicture from '../components/EventPicture';
 import CommentsSection from '../components/CommentsSection';
 import InterestedButton from '../components/InterestedButton';
 import { fetchEventDetails, fetchParticipantCount } from '../services/Parse';
+import Parse from '../services/Parse';
 
-
-
-const EventDetailPage = ({ userId }) => {
+const EventDetailPage = () => {
     const { eventId } = useParams();
     const [eventDetails, setEventDetails] = useState(null);
     const [attendeesCount, setAttendeesCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
-
+    const currentUser = Parse.User.current();
 
     useEffect(() => {
-
         const getEventDetails = async () => {
             try {
                 setLoading(true);
                 const details = await fetchEventDetails(eventId);
                 setEventDetails(details);
-
-                // Fetch the number of participants
-                const count = await fetchParticipantCount(eventId)
+                const count = await fetchParticipantCount(eventId);
                 setAttendeesCount(count);
             } catch (error) {
                 console.error("Error fetching event details:", error);
@@ -35,10 +31,9 @@ const EventDetailPage = ({ userId }) => {
         };
 
         getEventDetails();
-    }, [eventId, userId]);
+    }, [eventId]);
 
 
-    // Callback to update attendees count when participation status changes
     const updateAttendeesCount = async () => {
         try {
             const count = await fetchParticipantCount(eventId);
@@ -60,6 +55,14 @@ const EventDetailPage = ({ userId }) => {
         return (
             <div className="error-container">
                 <p>Sorry, we couldn't find the event you're looking for.</p>
+            </div>
+        );
+    }
+
+    if (!currentUser) {
+        return (
+            <div className="error-container">
+                <p>Error: User not logged in.</p>
             </div>
         );
     }
@@ -99,16 +102,16 @@ const EventDetailPage = ({ userId }) => {
                                 <a href="/attendees" className="attendee-count">{attendeesCount}</a> people have already joined!
                             </p>
                         </div>
-                        {/* Pass eventId and userId to InterestedButton */}
                         <InterestedButton
                             eventId={eventId}
-                            userId={userId}
-                            updateAttendeesCount={updateAttendeesCount} // Pass callback to update attendees count
+                            userId={currentUser.id}
+                            updateAttendeesCount={updateAttendeesCount}
                         />
                     </div>
                 </div>
 
-                <CommentsSection />
+                <CommentsSection eventId={eventId} userId={currentUser.id} />
+
             </div>
         </div>
     );

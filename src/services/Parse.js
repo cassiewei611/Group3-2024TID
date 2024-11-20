@@ -31,6 +31,8 @@ export const fetchAllEvents = async () => {
     }
 };
 
+
+
 export const createEvent = async (eventData, userId) => {
     try {
         const Event = Parse.Object.extend("Event");
@@ -42,14 +44,14 @@ export const createEvent = async (eventData, userId) => {
         newEvent.set("location", eventData.location);
         newEvent.set("petType", eventData.petType);
 
-
         if (eventData.image) {
             newEvent.set("image", eventData.image);
         }
-
-        const User = Parse.Object.extend("User");
-        const userPointer = new User();
-        userPointer.id = userId;
+        const userPointer = {
+            __type: 'Pointer',
+            className: '_User',
+            objectId: userId
+        };
         newEvent.set("created_by", userPointer);
 
         await newEvent.save();
@@ -58,6 +60,7 @@ export const createEvent = async (eventData, userId) => {
         console.error("Error while creating event:", error);
     }
 };
+
 
 
 export const fetchEventDetails = async (eventId) => {
@@ -76,9 +79,10 @@ export const fetchEventDetails = async (eventId) => {
 
 
             const user = event.get("created_by");
+            console.log("User object fetched:", user);
             const userId = user ? user.id : null;
             const username = user ? user.get("username") : "Unknown";
-
+            console.log("Username:", username);  // Should show the username or 'Unknown' if not fetched
 
             return {
                 id: event.id,
@@ -104,8 +108,8 @@ export const fetchEventDetails = async (eventId) => {
 
 export const checkUserInterest = async (eventId, userId) => {
     try {
-        const EventParticipation = Parse.Object.extend("EventParticipation");
-        const query = new Parse.Query(EventParticipation);
+        const Participant = Parse.Object.extend("Participant");
+        const query = new Parse.Query(Participant);
 
         query.equalTo("event_id", {
             __type: "Pointer",
@@ -117,6 +121,7 @@ export const checkUserInterest = async (eventId, userId) => {
             className: "User",
             objectId: userId,
         });
+
 
         const existingRecord = await query.first();
         return !!existingRecord;
@@ -126,56 +131,55 @@ export const checkUserInterest = async (eventId, userId) => {
     }
 };
 
-
-
 export const handleParticipation = async (eventId, userId) => {
+    console.log(`Event ID: ${eventId}, User ID: ${userId}`);
+
     try {
         const Participant = Parse.Object.extend("Participant");
         const query = new Parse.Query(Participant);
 
-        // 查询是否存在当前用户的参与记录
-        query.equalTo("event_id", {
-            __type: "Pointer",
-            className: "Event",
-            objectId: eventId,
-        });
-        query.equalTo("user_id", {
-            __type: "Pointer",
-            className: "User",
-            objectId: userId,
-        });
+        const eventPointer = {
+            __type: 'Pointer',
+            className: 'Event',
+            objectId: eventId
+        };
+        const userPointer = {
+            __type: 'Pointer',
+            className: '_User',
+            objectId: userId
+        };
+
+
+        query.equalTo("event_id", eventPointer);
+        query.equalTo("user_id", userPointer);
 
         const existingRecord = await query.first();
+        console.log("Query result:", existingRecord);
+
+
 
         if (existingRecord) {
-            // 如果存在记录，则删除，表示取消参与
+            console.log("Attempting to remove participation...");
             await existingRecord.destroy();
             console.log("Participation removed successfully!");
-            return false; // 返回未参与状态
+            return false;
         } else {
-            // 如果不存在记录，则创建新记录
+            console.log("No existing record found, creating new one...");
             const participation = new Participant();
-
-            // 设置 event_id 和 user_id 指针
-            const Event = Parse.Object.extend("Event");
-            const eventPointer = new Event();
-            eventPointer.id = eventId;
             participation.set("event_id", eventPointer);
-
-            const User = Parse.Object.extend("User");
-            const userPointer = new User();
-            userPointer.id = userId;
             participation.set("user_id", userPointer);
 
             await participation.save();
             console.log("Participation recorded successfully!");
-            return true; // 返回参与状态
+            return true;
         }
     } catch (error) {
         console.error("Error while toggling participation:", error);
-        return null; // 表示操作失败
+        return null;
     }
 };
+
+
 
 
 export const fetchParticipantCount = async (eventId) => {
@@ -189,10 +193,82 @@ export const fetchParticipantCount = async (eventId) => {
             objectId: eventId,
         });
 
-        const count = await query.count();
-        return count;
+        const results = await query.find();
+        const uniqueUserIds = new Set();
+
+        results.forEach(record => {
+            const userId = record.get("user_id")?.id;
+            if (userId) {
+                uniqueUserIds.add(userId);
+            }
+        });
+
+        return uniqueUserIds.size;
     } catch (error) {
         console.error("Error fetching participant count:", error);
         return 0;
+    }
+};
+
+export const fetchComments = async (eventId) => {
+    console.log("Fetching comments for event:", eventId);
+    const query = new Parse.Query("Comment");
+    const Event = Parse.Object.extend("Event");
+    const event = new Event();
+    event.id = eventId;
+    query.equalTo("event_id", event);
+    query.ascending("createdAt");
+    try {
+        const results = await query.find();
+        console.log("Comments fetched:", results);
+        return results.map(comment => ({
+            commentId: comment.id,
+            author: comment.get("user_id").get("username"),
+            content: comment.get("content"),
+            createdAt: comment.get("createdAt")
+        }));
+    } catch (error) {
+        console.error("Failed to fetch comments:", error);
+        return [];
+    }
+};
+
+
+
+export const saveComment = async (eventId, userId, content) => {
+    const Comment = Parse.Object.extend("Comment");
+    const comment = new Comment();
+
+    comment.set("event_id", { __type: 'Pointer', className: 'Event', objectId: eventId });
+    comment.set("user_id", { __type: 'Pointer', className: '_User', objectId: userId });
+    comment.set("content", content);
+
+    try {
+        await comment.save();
+        return {
+            commentId: comment.id,
+            author: "Current_User",
+            content: content
+        };
+    } catch (error) {
+        console.error("Failed to save comment:", error);
+        return null;
+    }
+};
+
+
+export const handleDelete = async (commentId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this comment?");
+    if (confirmed) {
+        const Comment = Parse.Object.extend("Comment");
+        const query = new Parse.Query(Comment);
+        try {
+            const comment = await query.get(commentId);
+            await comment.destroy();
+            return true;
+        } catch (error) {
+            console.error("Failed to delete comment:", error);
+            return false;
+        }
     }
 };

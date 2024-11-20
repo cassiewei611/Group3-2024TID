@@ -18,4 +18,3 @@ const Comment = ({ commentId, author, text, onDelete }) => {
 };
 
 export default Comment;
-
