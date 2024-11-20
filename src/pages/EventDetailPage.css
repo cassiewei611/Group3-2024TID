@@ -14,7 +14,6 @@ body {
 }
 
 
-/* Event Content Layout */
 .event-content {
     display: flex;
     flex-direction: row;
@@ -29,7 +28,6 @@ body {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Event Picture */
 .event-picture {
     flex: 1;
     max-width: 450px;
@@ -43,7 +41,6 @@ body {
     border-radius: 10px;
 }
 
-/* Event Description */
 .event-description {
     flex: 2;
     display: flex;

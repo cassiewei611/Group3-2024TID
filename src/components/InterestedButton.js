@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { toggleParticipation, checkUserInterest } from '../services/Parse';
+import { handleParticipation, checkUserInterest } from '../services/Parse';
 import './InterestedButton.css';
 
 const InterestedButton = ({ eventId, userId }) => {
     const [isInterested, setIsInterested] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // 添加加载状态
 
     // Step 1: 在组件挂载时检查用户是否对该事件感兴趣
     useEffect(() => {
         const fetchInterestStatus = async () => {
             try {
+                setIsLoading(true); // 开始加载
                 const interested = await checkUserInterest(eventId, userId);
                 setIsInterested(interested);
             } catch (error) {
                 console.error("Error fetching interest status:", error);
+            } finally {
+                setIsLoading(false); // 加载结束
             }
         };
         fetchInterestStatus();
@@ -20,17 +24,22 @@ const InterestedButton = ({ eventId, userId }) => {
 
     const handleClick = async () => {
         try {
-            // Step 2: 点击按钮时切换感兴趣状态
-            const updatedInterest = await toggleParticipation(eventId, userId);
-            setIsInterested(updatedInterest);
+            const updatedInterest = await handleParticipation(eventId, userId);
+            if (updatedInterest !== null) {
+                setIsInterested(updatedInterest);
+            }
         } catch (error) {
             console.error("Error toggling interest:", error);
         }
     };
 
+    if (isLoading) {
+        return <button className="interested-button" disabled>Loading...</button>;
+    }
+
     return (
         <button className="interested-button" onClick={handleClick}>
-            {isInterested ? "Interested" : "Not Interested"}
+            Interested
             {isInterested ? (
                 // 实心星星 SVG
                 <svg className="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
@@ -47,3 +56,4 @@ const InterestedButton = ({ eventId, userId }) => {
 };
 
 export default InterestedButton;
+

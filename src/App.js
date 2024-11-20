@@ -26,7 +26,7 @@ function App() {
 
 function Layout() {
   const location = useLocation();
-  const hideNavBarPaths = ["/"]; // Specify paths where NavBar should be hidden
+  const hideNavBarPaths = ["/"];
 
   return (
     <>
@@ -36,7 +36,8 @@ function Layout() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/create-event" element={<CreateEvent />} />
-        <Route path="/event-detail" element={<EventDetail />} />
+        <Route path="/event-detail/:eventId" element={<EventDetail />} />
+
       </Routes>
     </>
   );

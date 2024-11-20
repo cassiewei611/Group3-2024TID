@@ -14,10 +14,8 @@ export const fetchAllEvents = async () => {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
 
-        // Fetch all events
         const results = await query.find();
 
-        // Map results to a simpler formats
         return results.map(event => ({
             id: event.id,
             title: event.get("heading"),
@@ -44,12 +42,11 @@ export const createEvent = async (eventData, userId) => {
         newEvent.set("location", eventData.location);
         newEvent.set("petType", eventData.petType);
 
-        // Set the Parse.File object for the image
+
         if (eventData.image) {
-            newEvent.set("image", eventData.image); // eventData.image is a Parse.File
+            newEvent.set("image", eventData.image);
         }
 
-        // Set the created_by field with a reference to the User
         const User = Parse.Object.extend("User");
         const userPointer = new User();
         userPointer.id = userId;
@@ -63,26 +60,35 @@ export const createEvent = async (eventData, userId) => {
 };
 
 
-
 export const fetchEventDetails = async (eventId) => {
     try {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
 
-        query.equalTo("objectId", eventId); // Search by event ID
-        const event = await query.first(); // Fetch the first matching result
+        query.equalTo("objectId", eventId);
+        query.include("created_by");
+
+        const event = await query.first();
 
         if (event) {
-            // Return the event details as an object
+            const imageFile = event.get("image");
+            const imageUrl = imageFile ? imageFile.url() : null;
+
+
+            const user = event.get("created_by");
+            const userId = user ? user.id : null;
+            const username = user ? user.get("username") : "Unknown";
+
+
             return {
                 id: event.id,
-                headline: event.get("heading"), // Event title
-                description: event.get("description"), // Event description
-                datetime: event.get("datetime"), // Event date and time
-                location: event.get("location"), // Event location
-                petType: event.get("petType"), // Type of pet
-                image: event.get("image"), // Image URL or path
-                createdBy: event.get("created_by").id, // User ID who created the event (pointer to User)
+                heading: event.get("heading"),
+                description: event.get("description"),
+                datetime: event.get("datetime"),
+                location: event.get("location"),
+                petType: event.get("petType"),
+                image: imageUrl,
+                createdBy: { id: userId, username },
             };
         } else {
             console.log("No event found with this ID");
@@ -96,50 +102,97 @@ export const fetchEventDetails = async (eventId) => {
 
 
 
-
-// 检查用户是否对某个事件感兴趣
 export const checkUserInterest = async (eventId, userId) => {
     try {
         const EventParticipation = Parse.Object.extend("EventParticipation");
         const query = new Parse.Query(EventParticipation);
 
-        query.equalTo("event_id", eventId);
-        query.equalTo("user_id", userId);
-        const existingRecord = await query.first();
+        query.equalTo("event_id", {
+            __type: "Pointer",
+            className: "Event",
+            objectId: eventId,
+        });
+        query.equalTo("user_id", {
+            __type: "Pointer",
+            className: "User",
+            objectId: userId,
+        });
 
-        return !!existingRecord; // 返回布尔值，表示是否存在记录
+        const existingRecord = await query.first();
+        return !!existingRecord;
     } catch (error) {
         console.error("Error checking user interest:", error);
         return false;
     }
 };
 
-// 切换感兴趣状态
-export const toggleParticipation = async (eventId, userId) => {
-    try {
-        const EventParticipation = Parse.Object.extend("EventParticipation");
-        const query = new Parse.Query(EventParticipation);
 
-        // 查找是否已存在用户感兴趣记录
-        query.equalTo("event_id", eventId);
-        query.equalTo("user_id", userId);
+
+export const handleParticipation = async (eventId, userId) => {
+    try {
+        const Participant = Parse.Object.extend("Participant");
+        const query = new Parse.Query(Participant);
+
+        // 查询是否存在当前用户的参与记录
+        query.equalTo("event_id", {
+            __type: "Pointer",
+            className: "Event",
+            objectId: eventId,
+        });
+        query.equalTo("user_id", {
+            __type: "Pointer",
+            className: "User",
+            objectId: userId,
+        });
+
         const existingRecord = await query.first();
 
         if (existingRecord) {
-            // 如果记录存在，删除它表示取消感兴趣
+            // 如果存在记录，则删除，表示取消参与
             await existingRecord.destroy();
-            return false; // 返回 `false`，表示现在是未感兴趣状态
+            console.log("Participation removed successfully!");
+            return false; // 返回未参与状态
         } else {
-            // 如果记录不存在，创建新记录表示感兴趣
-            const newParticipation = new EventParticipation();
-            newParticipation.set("event_id", eventId);
-            newParticipation.set("user_id", userId);
+            // 如果不存在记录，则创建新记录
+            const participation = new Participant();
 
-            await newParticipation.save();
-            return true; // 返回 `true`，表示现在是感兴趣状态
+            // 设置 event_id 和 user_id 指针
+            const Event = Parse.Object.extend("Event");
+            const eventPointer = new Event();
+            eventPointer.id = eventId;
+            participation.set("event_id", eventPointer);
+
+            const User = Parse.Object.extend("User");
+            const userPointer = new User();
+            userPointer.id = userId;
+            participation.set("user_id", userPointer);
+
+            await participation.save();
+            console.log("Participation recorded successfully!");
+            return true; // 返回参与状态
         }
     } catch (error) {
-        console.error("Error toggling participation:", error);
-        throw error;
+        console.error("Error while toggling participation:", error);
+        return null; // 表示操作失败
+    }
+};
+
+
+export const fetchParticipantCount = async (eventId) => {
+    try {
+        const Participant = Parse.Object.extend("Participant");
+        const query = new Parse.Query(Participant);
+
+        query.equalTo("event_id", {
+            __type: "Pointer",
+            className: "Event",
+            objectId: eventId,
+        });
+
+        const count = await query.count();
+        return count;
+    } catch (error) {
+        console.error("Error fetching participant count:", error);
+        return 0;
     }
 };

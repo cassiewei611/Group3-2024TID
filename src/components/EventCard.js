@@ -21,10 +21,10 @@ const EventCard = ({ event }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    // Navigate to the event detail page with a sample event ID of 1
-    navigate('/event-detail');
-  }
-    ;
+    // Navigate to the event detail page with the event's ID
+    navigate(`/event-detail/${event.id}`);
+  };
+  ;
   return (
     <div className='cardContainer' onClick={handleCardClick}>
       <div className='imageContainer'>
