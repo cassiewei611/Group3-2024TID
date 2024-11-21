@@ -14,22 +14,31 @@ export const fetchAllEvents = async () => {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
 
+        // Fetch all events
         const results = await query.find();
 
-        return results.map(event => ({
-            id: event.id,
-            title: event.get("heading"),
-            description: event.get("description"),
-            datetime: event.get("datetime"),
-            location: event.get("location"),
-            petType: event.get("petType"),
-            image: event.get("image")
-        }));
+        // Map results to the required format for EventCard
+        return results.map(event => {
+            const datetime = event.get("datetime");
+            const date = datetime ? new Date(datetime).toISOString().split('T')[0] : null;
+            const time = datetime ? new Date(datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null;
+
+            return {
+                id: event.id,
+                title: event.get("heading"),
+                description: event.get("description"),
+                date, // Ensure this is the date portion
+                time, // Extracted time
+                city: event.get("location"),
+                image: event.get("image")?.url(), // Fetch URL if it's a Parse.File
+            };
+        });
     } catch (error) {
         console.error("Error fetching events:", error);
         return [];
     }
 };
+
 
 
 

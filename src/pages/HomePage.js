@@ -41,17 +41,18 @@ function HomePage() {
 
   return (
     <div className="homePageContainer">
-      <Filter onFilterChange={handleFilterChange} />
-      <div className="eventsContainer">
-        {filteredEvents.map((event) => (
-          <EventCard
-            key={event.id}
-            event={{ ...event, onSave: handleSaveEvent }}
-          />
-        ))}
-      </div>
+        <Filter onFilterChange={handleFilterChange} />
+        <div className="eventsContainer">
+            {filteredEvents.map((event) => (
+                <EventCard
+                    key={event.id}
+                    event={event} // Event object matches the required structure
+                />
+            ))}
+        </div>
     </div>
-  );
+);
+
 }
 
 export default HomePage;
