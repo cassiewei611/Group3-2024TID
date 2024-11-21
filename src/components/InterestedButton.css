@@ -1,0 +1,32 @@
+.interested-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4f443a;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.5rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    margin-top: 1.25rem;
+    transition: background-color 0.3s ease;
+}
+
+
+.interested-button:hover {
+    background-color: #5a402d;
+}
+
+.star-icon {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.interested-button:active .star-icon {
+    transform: scale(1.5);
+}
