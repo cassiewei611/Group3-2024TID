@@ -8,7 +8,6 @@ const CommentsSection = ({ eventId, userId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
 
-
     useEffect(() => {
         const loadComments = async () => {
             const loadedComments = await fetchComments(eventId);
@@ -16,7 +15,6 @@ const CommentsSection = ({ eventId, userId }) => {
         };
         loadComments();
     }, [eventId]);
-
 
     const handleSend = async () => {
         if (newComment.trim()) {
@@ -27,6 +25,7 @@ const CommentsSection = ({ eventId, userId }) => {
             }
         }
     };
+
 
     const handleCommentDelete = async (commentId) => {
         const success = await handleDelete(commentId, userId);
@@ -44,6 +43,7 @@ const CommentsSection = ({ eventId, userId }) => {
                     author={comment.author}
                     text={comment.content}
                     onDelete={handleCommentDelete}
+                    isAuthor={comment.userId === userId}
                 />
             ))}
             <div className="comment-input">

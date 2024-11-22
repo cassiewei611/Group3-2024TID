@@ -220,19 +220,17 @@ export const fetchParticipantCount = async (eventId) => {
 };
 
 export const fetchComments = async (eventId) => {
-    console.log("Fetching comments for event:", eventId);
     const query = new Parse.Query("Comment");
-    const Event = Parse.Object.extend("Event");
-    const event = new Event();
-    event.id = eventId;
-    query.equalTo("event_id", event);
+    query.include("user_id"); // Include the user_id pointer to fetch user data
+    query.equalTo("event_id", { __type: "Pointer", className: "Event", objectId: eventId });
     query.ascending("createdAt");
+
     try {
         const results = await query.find();
-        console.log("Comments fetched:", results);
         return results.map(comment => ({
             commentId: comment.id,
-            author: comment.get("user_id").get("username"),
+            author: comment.get("user_id").get("username"), // Fetch the username
+            userId: comment.get("user_id").id, // Fetch the user ID for validation
             content: comment.get("content"),
             createdAt: comment.get("createdAt")
         }));
@@ -244,20 +242,26 @@ export const fetchComments = async (eventId) => {
 
 
 
+
 export const saveComment = async (eventId, userId, content) => {
     const Comment = Parse.Object.extend("Comment");
     const comment = new Comment();
 
-    comment.set("event_id", { __type: 'Pointer', className: 'Event', objectId: eventId });
-    comment.set("user_id", { __type: 'Pointer', className: '_User', objectId: userId });
+    comment.set("event_id", { __type: "Pointer", className: "Event", objectId: eventId });
+    comment.set("user_id", { __type: "Pointer", className: "_User", objectId: userId });
     comment.set("content", content);
 
     try {
         await comment.save();
+
+        // Fetch current user's username for immediate frontend display
+        const currentUser = await new Parse.Query("_User").get(userId);
+        const username = currentUser.get("username");
+
         return {
             commentId: comment.id,
-            author: "Current_User",
-            content: content
+            author: username, // Use the username fetched for the current user
+            content: content,
         };
     } catch (error) {
         console.error("Failed to save comment:", error);
@@ -275,7 +279,15 @@ export const handleDelete = async (commentId, currentUserId) => {
             const comment = await query.get(commentId);
 
             const authorPointer = comment.get("user_id");
-            const authorId = authorPointer.objectId;
+            console.log("Author Pointer:", authorPointer); // Debugging
+            if (!authorPointer) {
+                alert("Author information is missing.");
+                return false;
+            }
+
+            const authorId = authorPointer.id; // Use the .id property of the Pointer object
+            console.log("Author ID:", authorId);
+            console.log("Current User ID:", currentUserId);
 
             if (authorId !== currentUserId) {
                 alert("You can only delete your own comments.");
@@ -290,5 +302,6 @@ export const handleDelete = async (commentId, currentUserId) => {
         }
     }
 };
+
 
 
