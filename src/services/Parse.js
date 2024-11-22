@@ -91,7 +91,7 @@ export const fetchEventDetails = async (eventId) => {
             console.log("User object fetched:", user);
             const userId = user ? user.id : null;
             const username = user ? user.get("username") : "Unknown";
-            console.log("Username:", username);  // Should show the username or 'Unknown' if not fetched
+            console.log("Username:", username);
 
             return {
                 id: event.id,
@@ -266,13 +266,22 @@ export const saveComment = async (eventId, userId, content) => {
 };
 
 
-export const handleDelete = async (commentId) => {
+export const handleDelete = async (commentId, currentUserId) => {
     const confirmed = window.confirm("Are you sure you want to delete this comment?");
     if (confirmed) {
         const Comment = Parse.Object.extend("Comment");
         const query = new Parse.Query(Comment);
         try {
             const comment = await query.get(commentId);
+
+            const authorPointer = comment.get("user_id");
+            const authorId = authorPointer.objectId;
+
+            if (authorId !== currentUserId) {
+                alert("You can only delete your own comments.");
+                return false;
+            }
+
             await comment.destroy();
             return true;
         } catch (error) {
@@ -281,3 +290,5 @@ export const handleDelete = async (commentId) => {
         }
     }
 };
+
+

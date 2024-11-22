@@ -9,20 +9,26 @@ const NavBar = () => {
     navigate("/create-event"); // Navigate to the CreateEvent page
   };
 
+  const handleLogoButtonClick = () => {
+    navigate("/home"); // Navigate to the Sign Up page
+  };
+
   return (
-    <nav className="navbar">
-      <div className="navbar-logo">
-        <img src="/img/Petish_logo.png" alt="Logo" className="logo-image" />
-      </div>
-      <div className="create-event">
-        <button className="create-event-button" onClick={handleCreateEventClick}>
-          Create Event +
+    <div class="navbar">
+      <div class="navbar-left">
+        <button class="logo-button" onClick={handleLogoButtonClick}>
+          < img src="/img/Petish_logo.png" alt="Logo" class="logo-image" />
         </button>
       </div>
-      <div className="profile-button">
-        <img src="/img/Profile_pic.png" alt="Button" className="button-image" />
+      <div class="navbar-right">
+        <button class="create-event-button" onClick={handleCreateEventClick}>
+          Create Event +{" "}
+        </button>
+        <button class="profile-button">
+          < img src="/img/Profile_pic.png" alt="Profile" class="button-image" />
+        </button>
       </div>
-    </nav>
+    </div>
   );
 };
 

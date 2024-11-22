@@ -28,9 +28,8 @@ const CommentsSection = ({ eventId, userId }) => {
         }
     };
 
-
     const handleCommentDelete = async (commentId) => {
-        const success = await handleDelete(commentId);
+        const success = await handleDelete(commentId, userId);
         if (success) {
             setComments(comments.filter(comment => comment.commentId !== commentId));
         }

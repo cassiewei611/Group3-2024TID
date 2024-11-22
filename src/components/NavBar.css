@@ -1,10 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.root {
+  width: 100vw;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   background-color: #6D5D4B;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  position: relative;
+  min-width: 1000px;
+}
+
+.logo-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .logo-image {
@@ -12,32 +31,41 @@
   width: auto;
 }
 
-.profile-button {
-  padding: 0;
-  cursor: pointer;
-  transition: filter 0.3s ease;
-  border-radius: 10px;
-  margin-left: 2rem;
-  height: 60px;
-
+.navbar-left {
+  display: flex;
+  align-items: center;
 }
 
-.Create-event-button {
-  padding: 0;
+.navbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.create-event-button {
   cursor: pointer;
-  transition: filter 0.3s ease;
-  border-radius: 10px;
   border: none;
   padding: 0.5rem 1rem;
   background-color: #6D5D4B;
-  font-family: "quicksand";
+  font-family: "quicksand", sans-serif;
   font-size: 20px;
   color: white;
-  margin-left: 62rem;
-
+  border-radius: 10px;
+  transition: filter 0.3s ease;
 }
 
-.Create-event-button:hover {
+.profile-button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.create-event-button:hover,
+.profile-button:hover {
   filter: brightness(0.8);
 }
 
@@ -47,6 +75,7 @@
   border-radius: 10px;
 }
 
-.profile-button:hover {
-  filter: brightness(0.8);
+.logo-image {
+  height: 60px;
+  width: auto;
 }
