@@ -17,7 +17,7 @@ const NavBar = () => {
     <div class="navbar">
       <div class="navbar-left">
         <button class="logo-button" onClick={handleLogoButtonClick}>
-          < img src="/img/Petish_logo.png" alt="Logo" class="logo-image" />
+          <img src="/img/Petish_logo.png" alt="Logo" class="logo-image" />
         </button>
       </div>
       <div class="navbar-right">
@@ -25,7 +25,7 @@ const NavBar = () => {
           Create Event +{" "}
         </button>
         <button class="profile-button">
-          < img src="/img/Profile_pic.png" alt="Profile" class="button-image" />
+          <img src="/img/Profile_pic.png" alt="Profile" class="button-image" />
         </button>
       </div>
     </div>
