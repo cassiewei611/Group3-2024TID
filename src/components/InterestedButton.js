@@ -11,7 +11,12 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
         const fetchInterestStatus = async () => {
             try {
                 setIsLoading(true);
+                if (!userId) {
+                    console.error("No userId found");
+                    return;
+                }
                 const interested = await checkUserInterest(eventId, userId);
+                console.log("Interest status fetched:", interested); // Debugging
                 setIsInterested(interested);
             } catch (error) {
                 console.error("Error fetching interest status:", error);
@@ -19,7 +24,10 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
                 setIsLoading(false);
             }
         };
-        fetchInterestStatus();
+
+        if (userId) {
+            fetchInterestStatus();
+        }
     }, [eventId, userId]);
 
     // Toggle interest status on button click
@@ -87,3 +95,4 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
 };
 
 export default InterestedButton;
+
