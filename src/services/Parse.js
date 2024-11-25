@@ -133,7 +133,7 @@ export const checkUserInterest = async (eventId, userId) => {
         });
         query.equalTo("user_id", {
             __type: "Pointer",
-            className: "User",
+            className: "_User",
             objectId: userId,
         });
 
