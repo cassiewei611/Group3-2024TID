@@ -31,6 +31,7 @@ export const fetchAllEvents = async () => {
                 date, // Ensure this is the date portion
                 time, // Extracted time
                 city: event.get("location"),
+                petType: event.get("petType"),
                 image: event.get("image")?.url(), // Fetch URL if it's a Parse.File
             };
         });
@@ -39,7 +40,6 @@ export const fetchAllEvents = async () => {
         return [];
     }
 };
-
 
 
 

@@ -4,12 +4,12 @@ import './Filter.css';
 const Filter = ({ onFilterChange }) => {
   const [city, setCity] = useState('');
   const [date, setDate] = useState('');
-  const [eventPetType, setEventPetType] = useState('');
+  const [petType, setpetType] = useState('');
 
-  // Use useEffect to call onFilterChange when any filter value changes
+  
   useEffect(() => {
-    onFilterChange({ city, date, eventType: eventPetType });
-  }, [city, date, eventPetType, onFilterChange]);
+    onFilterChange({ city, date, petType: petType });
+  }, [city, date, petType, onFilterChange]);
 
   return (
     <div className='filterContainerStyle'>
@@ -30,7 +30,7 @@ const Filter = ({ onFilterChange }) => {
       />
 
       <label className='labelStyle'>Pet Type</label>
-      <select className='selectStyle' value={eventPetType} onChange={(e) => setEventPetType(e.target.value)}>
+      <select className='selectStyle' value={petType} onChange={(e) => setpetType(e.target.value)}>
         <option value="">All pets</option>
         <option value="Dog">Dog</option>
         <option value="Cat">Cat</option>

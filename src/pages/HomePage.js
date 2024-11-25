@@ -21,16 +21,19 @@ function HomePage() {
 
   const handleFilterChange = useCallback(
     (filters) => {
-      const { city, date, eventType } = filters;
+      const { city, date, petType } = filters;
       const filtered = events.filter(
         (event) =>
           (!city || event.city === city) &&
           (!date || event.date === date) &&
-          (!eventType || event.type === eventType)
+          (!petType || event.petType === petType)
       );
       setFilteredEvents(filtered);
       // Log filtered events
+
+      console.log("Filters Applied:", filters);
       console.log("Filtered Events:", filtered);
+
     },
     [events]
   );
