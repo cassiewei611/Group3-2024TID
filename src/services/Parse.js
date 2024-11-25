@@ -15,10 +15,8 @@ export const fetchAllEvents = async () => {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
 
-        // Fetch all events
         const results = await query.find();
 
-        // Map results to the required format for EventCard
         return results.map(event => {
             const datetime = event.get("datetime");
             const date = datetime ? new Date(datetime).toISOString().split('T')[0] : null;
@@ -28,10 +26,10 @@ export const fetchAllEvents = async () => {
                 id: event.id,
                 title: event.get("heading"),
                 description: event.get("description"),
-                date, // Ensure this is the date portion
-                time, // Extracted time
+                date,
+                time,
                 city: event.get("location"),
-                image: event.get("image")?.url(), // Fetch URL if it's a Parse.File
+                image: event.get("image")?.url(),
             };
         });
     } catch (error) {
@@ -43,7 +41,7 @@ export const fetchAllEvents = async () => {
 
 
 
-export const createEvent = async (eventData, userId) => {
+export const createEvent = async (eventData, userId, onError) => {
     try {
         const Event = Parse.Object.extend("Event");
         const newEvent = new Event();
@@ -57,10 +55,11 @@ export const createEvent = async (eventData, userId) => {
         if (eventData.image) {
             newEvent.set("image", eventData.image);
         }
+
         const userPointer = {
-            __type: 'Pointer',
-            className: '_User',
-            objectId: userId
+            __type: "Pointer",
+            className: "_User",
+            objectId: userId,
         };
         newEvent.set("created_by", userPointer);
 
@@ -68,8 +67,14 @@ export const createEvent = async (eventData, userId) => {
         console.log("Event created successfully!");
     } catch (error) {
         console.error("Error while creating event:", error);
+        if (typeof onError === "function") {
+            onError(error); // Pass the error to the callback
+        } else {
+            throw error; // Optionally rethrow the error if no callback is provided
+        }
     }
 };
+
 
 
 
@@ -255,13 +260,12 @@ export const saveComment = async (eventId, userId, content) => {
     try {
         await comment.save();
 
-        // Fetch current user's username for immediate frontend display
         const currentUser = await new Parse.Query("_User").get(userId);
         const username = currentUser.get("username");
 
         return {
             commentId: comment.id,
-            author: username, // Use the username fetched for the current user
+            author: username,
             content: content,
         };
     } catch (error) {
@@ -280,13 +284,13 @@ export const handleDelete = async (commentId, currentUserId) => {
             const comment = await query.get(commentId);
 
             const authorPointer = comment.get("user_id");
-            console.log("Author Pointer:", authorPointer); // Debugging
+            console.log("Author Pointer:", authorPointer);
             if (!authorPointer) {
                 alert("Author information is missing.");
                 return false;
             }
 
-            const authorId = authorPointer.id; // Use the .id property of the Pointer object
+            const authorId = authorPointer.id;
             console.log("Author ID:", authorId);
             console.log("Current User ID:", currentUserId);
 

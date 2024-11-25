@@ -3,8 +3,9 @@ import Parse from '../services/Parse';
 import { createEvent } from "../services/Parse";
 import "./CreateEvent.css";
 
-const locations = ["Copenhagen", "Aarhus", "Odense", "Aalborg"];
+const locations = ["Copenhagen", "Aarhus", "Odense"];
 const petTypes = ["Dog", "Cat", "Bird", "Other"];
+const defaultImageURL = "/images/event1.jpg";
 
 const ProfileForm = () => {
   const [location, setLocation] = useState("");
@@ -12,7 +13,7 @@ const ProfileForm = () => {
   const [description, setDescription] = useState("");
   const [datetime, setDatetime] = useState("");
   const [petType, setPetType] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
   const [userId, setUserId] = useState("");
@@ -31,6 +32,20 @@ const ProfileForm = () => {
     setLocation(event.target.value);
   };
 
+  const getDefaultImageFile = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch default image: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      return new Parse.File("default_image.jpg", blob);
+    } catch (error) {
+      console.error("Error fetching default image:", error);
+      throw error;
+    }
+  };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]; // Get the selected file
@@ -47,44 +62,62 @@ const ProfileForm = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!location || !datetime || !petType || !userId) {
+  const handleSubmit = async (event, onError, onSuccess) => {
+    event.preventDefault();
+
+    if (!location || !heading || !description || !datetime || !petType) {
       alert("Please fill in all required fields before creating the event.");
       return;
     }
 
-    // Convert datetime string to a Date object
-    const datetimeObject = new Date(datetime);
-
-    const eventData = {
-      heading,
-      description,
-      datetime: datetimeObject, // Use the Date object here
-      location,
-      petType,
-      image,
-    };
-
-    console.log("Event Data:", eventData);
-
     try {
+
+      let finalImage;
+      if (image) {
+        finalImage = image;
+      } else {
+
+        finalImage = await getDefaultImageFile(defaultImageURL);
+      }
+
+      console.log("Image before saving:", finalImage);
+
+      const datetimeObject = new Date(datetime);
+      const eventData = {
+        heading,
+        description,
+        datetime: datetimeObject,
+        location,
+        petType,
+        image: finalImage,
+      };
+
+      console.log("Final Event Data:", eventData);
+
       await createEvent(eventData, userId);
 
+      // Notify user about success
       alert("Event created successfully!");
 
-      // Reset form fields
+      if (typeof onSuccess === "function") {
+        onSuccess("Event created successfully!");
+      }
       setHeading("");
       setDescription("");
       setDatetime("");
       setLocation("");
       setPetType("");
-      setImage("");
+      setImage(null);
       setImagePreview("");
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("There was an error creating the event. Please try again.");
+
+      if (typeof onError === "function") {
+        onError(error);
+      }
     }
   };
+
 
 
   return (
