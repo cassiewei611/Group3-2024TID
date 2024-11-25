@@ -49,7 +49,7 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
         <button className="interested-button" onClick={handleClick}>
             {isInterested ? (
                 <>
-                    Interested {/* Change text to reflect current interest */}
+                    Interested
                     {/* Solid star SVG for when interested */}
                     <svg
                         className="star-icon"
@@ -64,7 +64,7 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
                 </>
             ) : (
                 <>
-                    Interested {/* Change text to reflect current interest */}
+                    Interested
                     {/* Hollow star SVG for when not interested */}
                     <svg
                         className="star-icon"
