@@ -26,9 +26,10 @@ const ProfileForm = () => {
       return "Username must be 3-14 characters and contain only letters and numbers.";
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(password)) {
       return "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
-    }
+    } 
+
 
     if (password !== repeatPassword) {
       return "Passwords do not match.";
