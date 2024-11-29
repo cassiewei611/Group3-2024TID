@@ -111,8 +111,8 @@ body {
 }
 
 .image-upload-box {
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   border: 2px dashed #ccc;
   border-radius: 50%;
   display: flex;
@@ -120,6 +120,7 @@ body {
   align-items: center;
   cursor: pointer;
   overflow: hidden;
+  padding: 0;
 }
 
 .image-upload-box span {
