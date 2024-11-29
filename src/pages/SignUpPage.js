@@ -13,26 +13,20 @@ const ProfileForm = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Handle image upload and preview
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfileImage(file);
-      setPreviewImage(URL.createObjectURL(file)); // Preview the image
+      setPreviewImage(URL.createObjectURL(file));
     }
   };
 
-  // Validation rules for the form
   const validateForm = () => {
     if (!/^[a-zA-Z0-9]{3,14}$/.test(username)) {
       return "Username must be 3-14 characters and contain only letters and numbers.";
     }
 
-    if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        password
-      )
-    ) {
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
       return "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
     }
 
@@ -55,7 +49,8 @@ const ProfileForm = () => {
     return null;
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     const validationError = validateForm();
     if (validationError) {
       setErrorMessage(validationError);
@@ -70,11 +65,10 @@ const ProfileForm = () => {
       user.set("description", description);
       user.set("phone", phone);
 
-      // Handle image upload
       if (profileImage) {
         const parseFile = new Parse.File(profileImage.name, profileImage);
-        await parseFile.save(); // Save image to Parse
-        user.set("profileImage", parseFile); // Attach image to user object
+        await parseFile.save();
+        user.set("profileImage", parseFile);
       }
 
       await user.signUp();
@@ -85,8 +79,7 @@ const ProfileForm = () => {
   };
 
   return (
-    <div className="form-container">
-      {/* Image Upload Section */}
+    <form className="form-container" onSubmit={handleSignUp}>
       <div className="upload-section">
         <label htmlFor="profile-image-upload">
           <div className="image-upload-box">
@@ -106,13 +99,9 @@ const ProfileForm = () => {
         />
       </div>
 
-      {/* Form Header */}
       <div className="form-header">Create New Profile</div>
-
-      {/* Display error message */}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      {/* Form Fields */}
       <div className="form-section">
         <label>Username:</label>
         <input
@@ -122,7 +111,6 @@ const ProfileForm = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-
         <label>Password:</label>
         <input
           type="password"
@@ -131,7 +119,6 @@ const ProfileForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
         <label>Repeat password:</label>
         <input
           type="password"
@@ -140,7 +127,6 @@ const ProfileForm = () => {
           value={repeatPassword}
           onChange={(e) => setRepeatPassword(e.target.value)}
         />
-
         <label>Description:</label>
         <textarea
           placeholder="Optional (max. 250 characters)"
@@ -149,7 +135,6 @@ const ProfileForm = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-
         <label>E-mail:</label>
         <input
           type="email"
@@ -158,7 +143,6 @@ const ProfileForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
         <label>Phone number:</label>
         <input
           type="tel"
@@ -169,11 +153,10 @@ const ProfileForm = () => {
         />
       </div>
 
-      {/* Submit Button */}
-      <button className="submit-button" onClick={handleSignUp}>
+      <button type="submit" className="submit-button">
         Create user
       </button>
-    </div>
+    </form>
   );
 };
 
