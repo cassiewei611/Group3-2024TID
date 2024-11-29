@@ -1,12 +1,3 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.root {
-  width: 100vw;
-}
 
 .navbar {
   display: flex;
@@ -17,6 +8,7 @@
   width: 100%;
   position: relative;
   min-width: 1000px;
+  box-sizing: border-box;
 }
 
 .logo-button {

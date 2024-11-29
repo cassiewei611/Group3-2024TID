@@ -16,6 +16,7 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     overflow: hidden;
+    
 }
 
 .starButton {
@@ -49,6 +50,10 @@
     padding: 16px;
     align-items: center;
     gap: 16px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+.contentContainer:hover {
+    cursor: pointer;
 }
 
 .dateContainer {

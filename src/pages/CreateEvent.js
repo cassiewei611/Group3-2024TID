@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Parse from '../services/Parse';
+import Parse from "../services/Parse";
 import { createEvent } from "../services/Parse";
 import "./CreateEvent.css";
 
@@ -18,7 +18,7 @@ const ProfileForm = () => {
 
   const [userId, setUserId] = useState("");
   useEffect(() => {
-    Parse.User.currentAsync().then(currentUser => {
+    Parse.User.currentAsync().then((currentUser) => {
       if (currentUser) {
         setUserId(currentUser.id);
       } else {
@@ -26,7 +26,6 @@ const ProfileForm = () => {
       }
     });
   }, []);
-
 
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
@@ -36,7 +35,9 @@ const ProfileForm = () => {
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`Failed to fetch default image: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch default image: ${response.statusText}`
+        );
       }
 
       const blob = await response.blob();
@@ -48,15 +49,14 @@ const ProfileForm = () => {
   };
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0]; // Get the selected file
+    const file = event.target.files[0];
     if (file) {
-      const parseFile = new Parse.File(file.name, file); // Convert to Parse.File
-      setImage(parseFile); // Save the Parse.File object to state
+      const parseFile = new Parse.File(file.name, file);
+      setImage(parseFile);
 
-      // Optional: For preview purposes
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Display preview
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -71,12 +71,10 @@ const ProfileForm = () => {
     }
 
     try {
-
       let finalImage;
       if (image) {
         finalImage = image;
       } else {
-
         finalImage = await getDefaultImageFile(defaultImageURL);
       }
 
@@ -96,7 +94,6 @@ const ProfileForm = () => {
 
       await createEvent(eventData, userId);
 
-      // Notify user about success
       alert("Event created successfully!");
 
       if (typeof onSuccess === "function") {
@@ -118,18 +115,19 @@ const ProfileForm = () => {
     }
   };
 
-
-
   return (
-    <div className="form-container">
+    <div className="form-container2">
       <div className="upload-container">
-        <div className="upload-button" onClick={() => document.getElementById('image-upload').click()}>
+        <div
+          className="upload-button"
+          onClick={() => document.getElementById("image-upload").click()}
+        >
           <input
             id="image-upload"
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
-            style={{ display: "none" }} // Hide the file input
+            style={{ display: "none" }}
           />
           {imagePreview ? (
             <img src={imagePreview} alt="Preview" className="image-preview" />
