@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import EventCard from "../components/EventCard";
 import Filter from "../components/Filter";
 import './HomePage.css';
@@ -6,20 +6,35 @@ import { fetchAllEvents } from "../services/Parse";
 
 function HomePage() {
   const [events, setEvents] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [filters, setFilters] = useState({city:null, date:null, petType:null});
 
   useEffect(() => {
     const loadEvents = async () => {
       const fetchedEvents = await fetchAllEvents();
-      setEvents(fetchedEvents);
-      setFilteredEvents(fetchedEvents); // Initially set filtered events to all events
+      setEvents(fetchedEvents); 
     };
 
     loadEvents();
   }, []);
 
+  const filteredEvents = useMemo(() => {
+    return events.filter(
+      (event) =>
+        (!filters.city || event.city === filters.city) &&
+        (!filters.date || event.date === filters.date) &&
+        (!filters.petType || event.petType === filters.petType)
+    );
+  }, [events, filters]);
 
   const handleFilterChange = useCallback(
+    (newFilters) => {
+      setFilters(newFilters);
+      console.log("Filters Applied:", newFilters);
+    },
+    [] // 0 dependenciesbc it doesn't rely on external variables
+  );
+
+ /* const handleFilterChange = useCallback(
     (filters) => {
       const { city, date, petType } = filters;
       const filtered = events.filter(
@@ -37,6 +52,7 @@ function HomePage() {
     },
     [events]
   );
+  */
 
   const handleSaveEvent = (id) => {
     console.log(`Event ${id} saved`);
@@ -49,7 +65,7 @@ function HomePage() {
             {filteredEvents.map((event) => (
                 <EventCard
                     key={event.id}
-                    event={event} // Event object matches the required structure
+                    event={event}
                 />
             ))}
         </div>
