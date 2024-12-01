@@ -8,7 +8,7 @@ const Filter = ({ onFilterChange }) => {
 
   
   useEffect(() => {
-    onFilterChange({ city, date, petType: petType });
+    onFilterChange({ city, date, petType });
   }, [city, date, petType, onFilterChange]);
 
   return (
