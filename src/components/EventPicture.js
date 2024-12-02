@@ -2,7 +2,7 @@ import React from 'react';
 import './EventPicture.css';
 
 const EventPicture = ({ imagePath }) => {
-    const defaultImagePath = "images/default-event.jpg"; // Default placeholder image
+    const defaultImagePath = "images/default-event.jpg";
 
     return (
         <div className="event-picture">
@@ -10,8 +10,8 @@ const EventPicture = ({ imagePath }) => {
                 src={imagePath || defaultImagePath}
                 alt="Event Poster"
                 onError={(e) => {
-                    e.target.onerror = null; // Prevent infinite loop
-                    e.target.src = defaultImagePath; // Fallback to default image
+                    e.target.onerror = null;
+                    e.target.src = defaultImagePath;
                 }}
             />
         </div>
