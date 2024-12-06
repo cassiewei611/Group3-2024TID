@@ -1,4 +1,15 @@
+.background-countainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+  box-sizing: border-box;
 
+}
 .form-container2 {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -8,10 +19,9 @@
   padding: 2rem;
   width: 40%;
   min-width: 500px;
-  margin: 1.25rem 2.5rem;
+  margin: 2em auto;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  align-self: center;
 }
 
 .upload-button {
