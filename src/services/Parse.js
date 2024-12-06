@@ -1,11 +1,12 @@
 import Parse from 'parse/dist/parse.min.js';
 
-const PARSE_APPLICATION_ID = 'HuKo8mIdhoVZSdGmhrpUrVbbAbpD2Kxfj2ce436R';
-const PARSE_HOST_URL = 'https://parseapi.back4app.com/';
-const PARSE_JAVASCRIPT_KEY = 'dQXQMc0yr5pt3G8tlLqldSGPnw9pOJ3XEYL51Yq9';
+const PARSE_APPLICATION_ID = process.env.REACT_APP_PARSE_APPLICATION_ID;
+const PARSE_HOST_URL = process.env.REACT_APP_PARSE_HOST_URL;
+const PARSE_JAVASCRIPT_KEY = process.env.REACT_APP_PARSE_JAVASCRIPT_KEY;
 
 Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
 Parse.serverURL = PARSE_HOST_URL;
+
 
 export default Parse;
 
@@ -14,10 +15,8 @@ export const fetchAllEvents = async () => {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
 
-        // Fetch all events
         const results = await query.find();
 
-        // Map results to the required format for EventCard
         return results.map(event => {
             const datetime = event.get("datetime");
             const date = datetime ? new Date(datetime).toISOString().split('T')[0] : null;
@@ -27,10 +26,11 @@ export const fetchAllEvents = async () => {
                 id: event.id,
                 title: event.get("heading"),
                 description: event.get("description"),
-                date, // Ensure this is the date portion
-                time, // Extracted time
+                date,
+                time,
                 city: event.get("location"),
-                image: event.get("image")?.url(), // Fetch URL if it's a Parse.File
+                petType: event.get("petType"),
+                image: event.get("image")?.url(),
             };
         });
     } catch (error) {
@@ -41,8 +41,7 @@ export const fetchAllEvents = async () => {
 
 
 
-
-export const createEvent = async (eventData, userId) => {
+export const createEvent = async (eventData, userId, onError) => {
     try {
         const Event = Parse.Object.extend("Event");
         const newEvent = new Event();
@@ -56,10 +55,11 @@ export const createEvent = async (eventData, userId) => {
         if (eventData.image) {
             newEvent.set("image", eventData.image);
         }
+
         const userPointer = {
-            __type: 'Pointer',
-            className: '_User',
-            objectId: userId
+            __type: "Pointer",
+            className: "_User",
+            objectId: userId,
         };
         newEvent.set("created_by", userPointer);
 
@@ -67,8 +67,14 @@ export const createEvent = async (eventData, userId) => {
         console.log("Event created successfully!");
     } catch (error) {
         console.error("Error while creating event:", error);
+        if (typeof onError === "function") {
+            onError(error);
+        } else {
+            throw error;
+        }
     }
 };
+
 
 
 
@@ -91,7 +97,7 @@ export const fetchEventDetails = async (eventId) => {
             console.log("User object fetched:", user);
             const userId = user ? user.id : null;
             const username = user ? user.get("username") : "Unknown";
-            console.log("Username:", username);  // Should show the username or 'Unknown' if not fetched
+            console.log("Username:", username);
 
             return {
                 id: event.id,
@@ -127,7 +133,7 @@ export const checkUserInterest = async (eventId, userId) => {
         });
         query.equalTo("user_id", {
             __type: "Pointer",
-            className: "User",
+            className: "_User",
             objectId: userId,
         });
 
@@ -220,19 +226,17 @@ export const fetchParticipantCount = async (eventId) => {
 };
 
 export const fetchComments = async (eventId) => {
-    console.log("Fetching comments for event:", eventId);
     const query = new Parse.Query("Comment");
-    const Event = Parse.Object.extend("Event");
-    const event = new Event();
-    event.id = eventId;
-    query.equalTo("event_id", event);
+    query.include("user_id");
+    query.equalTo("event_id", { __type: "Pointer", className: "Event", objectId: eventId });
     query.ascending("createdAt");
+
     try {
         const results = await query.find();
-        console.log("Comments fetched:", results);
         return results.map(comment => ({
             commentId: comment.id,
             author: comment.get("user_id").get("username"),
+            userId: comment.get("user_id").id,
             content: comment.get("content"),
             createdAt: comment.get("createdAt")
         }));
@@ -244,20 +248,25 @@ export const fetchComments = async (eventId) => {
 
 
 
+
 export const saveComment = async (eventId, userId, content) => {
     const Comment = Parse.Object.extend("Comment");
     const comment = new Comment();
 
-    comment.set("event_id", { __type: 'Pointer', className: 'Event', objectId: eventId });
-    comment.set("user_id", { __type: 'Pointer', className: '_User', objectId: userId });
+    comment.set("event_id", { __type: "Pointer", className: "Event", objectId: eventId });
+    comment.set("user_id", { __type: "Pointer", className: "_User", objectId: userId });
     comment.set("content", content);
 
     try {
         await comment.save();
+
+        const currentUser = await new Parse.Query("_User").get(userId);
+        const username = currentUser.get("username");
+
         return {
             commentId: comment.id,
-            author: "Current_User",
-            content: content
+            author: username,
+            content: content,
         };
     } catch (error) {
         console.error("Failed to save comment:", error);
@@ -266,13 +275,30 @@ export const saveComment = async (eventId, userId, content) => {
 };
 
 
-export const handleDelete = async (commentId) => {
+export const handleDelete = async (commentId, currentUserId) => {
     const confirmed = window.confirm("Are you sure you want to delete this comment?");
     if (confirmed) {
         const Comment = Parse.Object.extend("Comment");
         const query = new Parse.Query(Comment);
         try {
             const comment = await query.get(commentId);
+
+            const authorPointer = comment.get("user_id");
+            console.log("Author Pointer:", authorPointer);
+            if (!authorPointer) {
+                alert("Author information is missing.");
+                return false;
+            }
+
+            const authorId = authorPointer.id;
+            console.log("Author ID:", authorId);
+            console.log("Current User ID:", currentUserId);
+
+            if (authorId !== currentUserId) {
+                alert("You can only delete your own comments.");
+                return false;
+            }
+
             await comment.destroy();
             return true;
         } catch (error) {
@@ -281,3 +307,6 @@ export const handleDelete = async (commentId) => {
         }
     }
 };
+
+
+
