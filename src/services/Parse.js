@@ -30,7 +30,7 @@ export const fetchAllEvents = async () => {
                 time,
                 city: event.get("location"),
                 petType: event.get("petType"),
-                image: event.get("image")?.url(), // Fetch URL if it's a Parse.File
+                image: event.get("image")?.url(),
             };
         });
     } catch (error) {
@@ -68,9 +68,9 @@ export const createEvent = async (eventData, userId, onError) => {
     } catch (error) {
         console.error("Error while creating event:", error);
         if (typeof onError === "function") {
-            onError(error); // Pass the error to the callback
+            onError(error);
         } else {
-            throw error; // Optionally rethrow the error if no callback is provided
+            throw error;
         }
     }
 };
@@ -227,7 +227,7 @@ export const fetchParticipantCount = async (eventId) => {
 
 export const fetchComments = async (eventId) => {
     const query = new Parse.Query("Comment");
-    query.include("user_id"); // Include the user_id pointer to fetch user data
+    query.include("user_id");
     query.equalTo("event_id", { __type: "Pointer", className: "Event", objectId: eventId });
     query.ascending("createdAt");
 
@@ -235,8 +235,8 @@ export const fetchComments = async (eventId) => {
         const results = await query.find();
         return results.map(comment => ({
             commentId: comment.id,
-            author: comment.get("user_id").get("username"), // Fetch the username
-            userId: comment.get("user_id").id, // Fetch the user ID for validation
+            author: comment.get("user_id").get("username"),
+            userId: comment.get("user_id").id,
             content: comment.get("content"),
             createdAt: comment.get("createdAt")
         }));
