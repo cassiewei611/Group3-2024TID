@@ -116,90 +116,92 @@ const ProfileForm = () => {
   };
 
   return (
-    <div className="form-container2">
-      <div className="upload-container">
-        <div
-          className="upload-button"
-          onClick={() => document.getElementById("image-upload").click()}
-        >
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            style={{ display: "none" }}
-          />
-          {imagePreview ? (
-            <img src={imagePreview} alt="Preview" className="image-preview" />
-          ) : (
-            <span>Upload Image</span>
-          )}
+    <div className="background-container">
+      <div className="form-container2">
+        <div className="upload-container">
+          <div
+            className="upload-button"
+            onClick={() => document.getElementById("image-upload").click()}
+          >
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+            {imagePreview ? (
+              <img src={imagePreview} alt="Preview" className="image-preview" />
+            ) : (
+              <span>Upload Image</span>
+            )}
+          </div>
         </div>
+
+        <div className="form-header">Create An Event</div>
+
+        <div className="form-section">
+          <label>Headline:</label>
+          <input
+            type="text"
+            placeholder="max. 14 characters"
+            className="input-field"
+            value={heading}
+            onChange={(e) => setHeading(e.target.value)}
+          />
+
+          <label>Description:</label>
+          <textarea
+            placeholder="Write something about yourself..."
+            className="input-field"
+            style={{ height: "80px" }}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+
+          <label>Date and Time</label>
+          <input
+            type="datetime-local"
+            value={datetime}
+            onChange={(e) => setDatetime(e.target.value)}
+            className="input-field"
+          />
+
+          <label>Location</label>
+          <select
+            className="input-field selectStyle"
+            value={location}
+            onChange={handleLocationChange}
+            required
+          >
+            <option value="">Select a location</option>
+            {locations.map((loc, index) => (
+              <option key={index} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+
+          <label>Pet Type</label>
+          <select
+            className="input-field selectStyle"
+            value={petType}
+            onChange={(e) => setPetType(e.target.value)}
+            required
+          >
+            <option value="">Select pet type</option>
+            {petTypes.map((pet, index) => (
+              <option key={index} value={pet}>
+                {pet}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button className="submit-button" onClick={handleSubmit}>
+          Create Event
+        </button>
       </div>
-
-      <div className="form-header">Create An Event</div>
-
-      <div className="form-section">
-        <label>Headline:</label>
-        <input
-          type="text"
-          placeholder="max. 14 characters"
-          className="input-field"
-          value={heading}
-          onChange={(e) => setHeading(e.target.value)}
-        />
-
-        <label>Description:</label>
-        <textarea
-          placeholder="Write something about yourself..."
-          className="input-field"
-          style={{ height: "80px" }}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <label>Date and Time</label>
-        <input
-          type="datetime-local"
-          value={datetime}
-          onChange={(e) => setDatetime(e.target.value)}
-          className="input-field"
-        />
-
-        <label>Location</label>
-        <select
-          className="input-field selectStyle"
-          value={location}
-          onChange={handleLocationChange}
-          required
-        >
-          <option value="">Select a location</option>
-          {locations.map((loc, index) => (
-            <option key={index} value={loc}>
-              {loc}
-            </option>
-          ))}
-        </select>
-
-        <label>Pet Type</label>
-        <select
-          className="input-field selectStyle"
-          value={petType}
-          onChange={(e) => setPetType(e.target.value)}
-          required
-        >
-          <option value="">Select pet type</option>
-          {petTypes.map((pet, index) => (
-            <option key={index} value={pet}>
-              {pet}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button className="submit-button" onClick={handleSubmit}>
-        Create Event
-      </button>
     </div>
   );
 };
