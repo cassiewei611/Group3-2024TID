@@ -13,6 +13,10 @@ const NavBar = () => {
     navigate("/home"); // Navigate to the Sign Up page
   };
 
+  const handleProfileButtonClick = () => {
+    navigate("/profile"); // Navigate to the Profile page
+  };
+
   return (
     <div class="navbar">
       <div class="navbar-left">
@@ -24,7 +28,7 @@ const NavBar = () => {
         <button class="create-event-button" onClick={handleCreateEventClick}>
           Create Event +{" "}
         </button>
-        <button class="profile-button">
+        <button class="profile-button" onClick={handleProfileButtonClick}>
           < img src="/img/Profile_pic.png" alt="Profile" class="button-image" />
         </button>
       </div>
