@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate here
 import './EventDetailPage.css';
 import EventPicture from '../components/EventPicture';
 import CommentsSection from '../components/CommentsSection';
@@ -12,6 +12,7 @@ const EventDetailPage = () => {
     const [eventDetails, setEventDetails] = useState(null);
     const [attendeesCount, setAttendeesCount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     const currentUser = Parse.User.current();
 
@@ -42,6 +43,11 @@ const EventDetailPage = () => {
         }
     };
 
+
+    const goBack = () => {
+        navigate('/home');
+    };
+
     if (loading) {
         return (
             <div className="loading-container">
@@ -69,6 +75,7 @@ const EventDetailPage = () => {
 
     return (
         <div className="event-detail-page">
+            <button className="back-button" onClick={goBack}>Back to Home</button> {/* Back button */}
             <div className="event-detail-page-container">
                 <div className="event-content">
                     <div className="event-picture-container">
@@ -111,7 +118,6 @@ const EventDetailPage = () => {
                 </div>
 
                 <CommentsSection eventId={eventId} userId={currentUser.id} />
-
             </div>
         </div>
     );
