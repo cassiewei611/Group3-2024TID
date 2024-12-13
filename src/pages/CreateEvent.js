@@ -117,7 +117,7 @@ const ProfileForm = () => {
 
   return (
     <div className="background-container">
-      <div className="form-container2">
+      <form className="form-container2" onSubmit={handleSubmit}>
         <div className="upload-container">
           <div
             className="upload-button"
@@ -198,10 +198,10 @@ const ProfileForm = () => {
           </select>
         </div>
 
-        <button className="submit-button" onClick={handleSubmit}>
+        <button type="submit" className="submit-button">
           Create Event
         </button>
-      </div>
+      </form>
     </div>
   );
 };
