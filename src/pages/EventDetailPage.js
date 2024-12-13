@@ -33,7 +33,6 @@ const EventDetailPage = () => {
         getEventDetails();
     }, [eventId]);
 
-
     const updateAttendeesCount = async () => {
         try {
             const count = await fetchParticipantCount(eventId);
@@ -46,6 +45,7 @@ const EventDetailPage = () => {
     if (loading) {
         return (
             <div className="loading-container">
+                <div className="spinner"></div>
                 <p>Loading event details, please wait...</p>
             </div>
         );
