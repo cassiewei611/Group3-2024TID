@@ -21,7 +21,6 @@ const EventCard = ({ event }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    // Navigate to the event detail page with the event's ID
     navigate(`/event-detail/${event.id}`);
   };
   ;
