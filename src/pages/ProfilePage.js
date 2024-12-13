@@ -111,7 +111,7 @@ function ProfilePage() {
 
       <div className="eventsSection">
         <h3>My Events</h3>
-        <div className="eventsContainer">
+        <div className="eventsContainer2">
           {events.myEvents.length > 0 ? (
             events.myEvents.map((event) => (
               <EventCard key={event.id} event={event} />
@@ -122,7 +122,7 @@ function ProfilePage() {
         </div>
 
         <h3>Interested Events</h3>
-        <div className="eventsContainer">
+        <div className="eventsContainer2">
           {events.interestedEvents.length > 0 ? (
             events.interestedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
