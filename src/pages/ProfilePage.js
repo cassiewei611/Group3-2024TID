@@ -3,8 +3,10 @@ import EventCard from "../components/EventCard";
 import Parse from "../services/Parse"; // Ensure this matches the path to your Parse setup
 import { fetchEventDetails } from "../services/Parse";
 import "./ProfilePage.css";
+import { useParams } from "react-router-dom";
 
 function ProfilePage() {
+  const { userId } = useParams();
   const [userData, setUserData] = useState(null);
   const [events, setEvents] = useState({ myEvents: [], interestedEvents: [] });
   const [loading, setLoading] = useState(true);
@@ -102,16 +104,18 @@ function ProfilePage() {
       {userData && (
         <div className="profileSection">
           <img src={userData.profileImage} alt="Profile" className="profileImage" />
-          <h2>{userData.username}</h2>
-          <p>{userData.email}</p>
-          <p>{userData.phone}</p>
-          <p>{userData.description}</p>
+          <div className="profileDetails">
+             <h1 className='profileTitle'>{userData.username}</h1>
+            {/* <p>{userData.email}</p>
+            <p>{userData.phone}</p> */}
+            <p className="profileInformation">{userData.description}</p>
+            </div>
         </div>
       )}
 
       <div className="eventsSection">
-        <h3>My Events</h3>
-        <div className="eventsContainer2">
+        <span className="eventSectionTitle">My Events</span>
+        <div className="eventsSection">
           {events.myEvents.length > 0 ? (
             events.myEvents.map((event) => (
               <EventCard key={event.id} event={event} />
@@ -121,8 +125,8 @@ function ProfilePage() {
           )}
         </div>
 
-        <h3>Interested Events</h3>
-        <div className="eventsContainer2">
+        <span className="eventSectionTitle">Interested Events</span>
+        <div className="eventsSection">
           {events.interestedEvents.length > 0 ? (
             events.interestedEvents.map((event) => (
               <EventCard key={event.id} event={event} />

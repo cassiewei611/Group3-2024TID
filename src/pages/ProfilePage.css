@@ -12,19 +12,27 @@
   width: 80%;
   margin: 0 auto;
 }
-.eventsSection {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-  width: 80%;
-  margin: 0 auto;
-}  
-.eventsContainer2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  width: 80%;
-  margin: 0 auto;
+.profileDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Adds spacing between profile details */
+    justify-content: center;
+  }
+.profileTitle{
+    font-size: 20px;
+    color: #333;
+    font-family: Quicksand;
+    font-weight: bold;
+}
+.profileInformation{
+    display: inline-block; /* Wraps content size */
+    max-width: 100%; /* Ensures it doesn't exceed container width */
+    padding: 8px;
+    color: #333;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-family: OpenSans;
 }
 .profileImage
 {
@@ -33,3 +41,19 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.eventSectionTitle{
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 18px;
+    font-family: QuickSand;
+}
+
+.eventsSection {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  width: 80%;
+  
+}  
+
+
