@@ -1,32 +1,70 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./NavBar.css";
 
 const NavBar = () => {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleCreateEventClick = () => {
-    navigate("/create-event"); // Navigate to the CreateEvent page
+    navigate("/create-event");
   };
 
   const handleLogoButtonClick = () => {
-    navigate("/home"); // Navigate to the Sign Up page
+    navigate("/home");
+  };
+
+  const handleProfileIconClick = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleLogOutClick = () => {
+    navigate("/");
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
 
   return (
-    <div class="navbar">
-      <div class="navbar-left">
-        <button class="logo-button" onClick={handleLogoButtonClick}>
-          < img src="/img/Petish_logo.png" alt="Logo" class="logo-image" />
+    <div className="navbar">
+      <div className="navbar-left">
+        <button className="logo-button" onClick={handleLogoButtonClick}>
+          <img src="/img/Petish_logo.png" alt="Logo" className="logo-image" />
         </button>
       </div>
-      <div class="navbar-right">
-        <button class="create-event-button" onClick={handleCreateEventClick}>
-          Create Event +{" "}
+      <div className="navbar-right">
+        <button
+          className="create-event-button"
+          onClick={handleCreateEventClick}
+        >
+          Create Event +
         </button>
-        <button class="profile-button">
-          < img src="/img/Profile_pic.png" alt="Profile" class="button-image" />
-        </button>
+        <div className="profile-container">
+          <button className="profile-button" onClick={handleProfileIconClick}>
+            <img
+              src="/img/Profile_pic.png"
+              alt="Profile"
+              className="button-image"
+            />
+          </button>
+          {showDropdown && (
+            <div className="dropdown-menu">
+              <button
+                className="dropdown-item-profile"
+                onClick={handleProfileClick}
+              >
+                Profile
+              </button>
+              <button
+                className="dropdown-item-logout"
+                onClick={handleLogOutClick}
+              >
+                Log Out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
