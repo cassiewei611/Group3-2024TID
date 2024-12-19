@@ -39,7 +39,7 @@ function Layout() {
         <Route path="/" element={<Login />} />
         {/* Private  Routes */}
         <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
-        <Route path="/signup" element={<RequireAuth><SignUpPage /></RequireAuth>} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route path="/create-event" element={<RequireAuth><CreateEvent /></RequireAuth>} />
         <Route path="/event-detail/:eventId" element={<RequireAuth><EventDetail /></RequireAuth>} />
 

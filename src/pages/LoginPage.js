@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Parse from "../services/Parse";
-import lineUnderLogin from "../assets/Line-under-login.svg";
-import logo from "../assets/logo.png";
-import mainPicture from "../assets/main-picture.jpeg";
 import "./LoginPage.css";
 import Button from "../components/Button";
+
+// const lineUnderLogin = "/img/Line-under-login.svg";
+const logo = "/img/logo.png";
+const mainPicture = "/img/main-picture.jpeg";
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
