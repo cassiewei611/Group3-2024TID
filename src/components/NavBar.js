@@ -30,6 +30,9 @@ const NavBar = () => {
 
   const handleLogOutClick = () => {
     navigate("/");
+    setShowDropdown(false);
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const handleProfileClick = () => {
