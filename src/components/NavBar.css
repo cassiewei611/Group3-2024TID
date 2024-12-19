@@ -82,7 +82,7 @@
  margin-top: 10px;
  width: 100px;
  height: auto;
- 
+ z-index: 2;
 }
 
 .dropdown-item-profile, .dropdown-item-logout {
