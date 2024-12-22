@@ -1,101 +1,61 @@
 import React, { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
-import Parse from "../services/Parse"; // Ensure this matches the path to your Parse setup
-import { fetchEventDetails } from "../services/Parse";
+import Parse from "../services/Parse";
+import { fetchUserEvents, checkUserInterest } from "../services/Parse"; // Ensure correct import paths
 import "./ProfilePage.css";
 import { useParams } from "react-router-dom";
+import  Button  from "../components/Button";  
 
-function ProfilePage() {
+const ProfilePage = () => {
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
   const [events, setEvents] = useState({ myEvents: [], interestedEvents: [] });
   const [loading, setLoading] = useState(true);
 
-
-  const fetchUserEvents = async (userId) => {
-    try {
-      const Event = Parse.Object.extend("Event");
-      const query = new Parse.Query(Event);
-      query.equalTo("created_by", {
-        __type: "Pointer",
-        className: "_User",
-        objectId: userId,
-      });
-
-      const results = await query.find();
-      return results.map((event) => ({
-        id: event.id,
-        title: event.get("heading"),
-        description: event.get("description"),
-        date: event.get("datetime") ? new Date(event.get("datetime")).toISOString().split("T")[0] : null,
-        city: event.get("location"),
-        image: event.get("image")?.url(),
-        petType: event.get("petType"),
-      }));
-    } catch (error) {
-      console.error("Error fetching user events:", error);
-      return [];
-    }
-  };
-
- 
-  const fetchInterestedEvents = async (userId) => {
-    try {
-      const Participant = Parse.Object.extend("Participant");
-      const query = new Parse.Query(Participant);
-      query.equalTo("user_id", {
-        __type: "Pointer",
-        className: "_User",
-        objectId: userId,
-      });
-      query.include("event_id");
-
-      const results = await query.find();
-      return results.map((record) => {
-        const event = record.get("event_id");
-        return {
-          id: event.id,
-          title: event.get("heading"),
-          description: event.get("description"),
-          date: event.get("datetime") ? new Date(event.get("datetime")).toISOString().split("T")[0] : null,
-          city: event.get("location"),
-          image: event.get("image")?.url(),
-          petType: event.get("petType"),
-        };
-      });
-    } catch (error) {
-      console.error("Error fetching interested events:", error);
-      return [];
-    }
-  };
-
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
-      const currentUser = Parse.User.current();
-      if (currentUser) {
-        try {
-          const username = currentUser.get("username");
-          const email = currentUser.get("email");
-          const phone = currentUser.get("phone");
-          const description = currentUser.get("description");
-          const profileImage = currentUser.get("profileImage")?.url();
-
+      try {
+        const targetUserId = userId || Parse.User.current().id; 
+        const User = Parse.Object.extend("_User");
+        const query = new Parse.Query(User);
+        query.equalTo("objectId", targetUserId);
+        const user = await query.first();
+  
+        if (user) {
+          const username = user.get("username");
+          const email = user.get("email");
+          const phone = user.get("phone");
+          const description = user.get("description");
+          const profileImage = user.get("profileImage")?.url();
+  
           setUserData({ username, email, phone, description, profileImage });
-
-          const myEvents = await fetchUserEvents(currentUser.id);
-          const interestedEvents = await fetchInterestedEvents(currentUser.id);
-
-          setEvents({ myEvents, interestedEvents });
-        } catch (error) {
-          console.error("Error fetching user data:", error);
+  
+          const myEvents = await fetchUserEvents(targetUserId);
+  
+          // Fetch interested events concurrently
+          const interestedEvents = await Promise.all(
+            myEvents.map(async (event) => {
+              const isInterested = await checkUserInterest(event.id, targetUserId);
+              return isInterested ? event : null;
+            })
+          );
+  
+          setEvents({
+            myEvents,
+            interestedEvents: interestedEvents.filter(Boolean), // Remove null values
+          });
         }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-
+  
     fetchUserData();
-  }, []);
+  }, [userId]); 
+  
 
   if (loading) return <div>Loading...</div>;
 
@@ -105,39 +65,40 @@ function ProfilePage() {
         <div className="profileSection">
           <img src={userData.profileImage} alt="Profile" className="profileImage" />
           <div className="profileDetails">
-             <h1 className='profileTitle'>{userData.username}</h1>
-            {/* <p>{userData.email}</p>
-            <p>{userData.phone}</p> */}
+            <h1 className="profileTitle">{userData.username}</h1>
             <p className="profileInformation">{userData.description}</p>
-            </div>
+          </div>
         </div>
       )}
 
-      <div className="eventsSection">
+    <div className="eventsSection">
+      <div className="eventsCategory">
         <span className="eventSectionTitle">My Events</span>
-        <div className="eventsSection">
-          {events.myEvents.length > 0 ? (
-            events.myEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))
-          ) : (
-            <p>No events created yet.</p>
-          )}
-        </div>
-
-        <span className="eventSectionTitle">Interested Events</span>
-        <div className="eventsSection">
-          {events.interestedEvents.length > 0 ? (
-            events.interestedEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))
-          ) : (
-            <p>No events added to your interests yet.</p>
+         <div className="myEventsScroller">
+         {events.myEvents.length > 0 ? (
+           events.myEvents.map((event) => (
+          <EventCard key={event.id} event={event} />
+           ))
+           ) : (
+          <p className="noEventsMessage">No events created yet.</p>
           )}
         </div>
       </div>
+      <div className="eventsCategory">
+        <span className="eventSectionTitle">Interested Events</span>
+        <div className="myEventsScroller">
+        {events.interestedEvents.length > 0 ? (
+          events.interestedEvents.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))
+         ) : (
+         <p className="noEventsMessage">No events added to your interests yet.</p>
+        )}
+        </div>
+      </div>
     </div>
+  </div>
   );
-}
+};
 
 export default ProfilePage;
