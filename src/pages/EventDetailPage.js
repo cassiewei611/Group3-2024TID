@@ -4,14 +4,16 @@ import './EventDetailPage.css';
 import EventPicture from '../components/EventPicture';
 import CommentsSection from '../components/CommentsSection';
 import InterestedButton from '../components/InterestedButton';
-import { fetchEventDetails, fetchParticipantCount } from '../services/Parse';
+import { fetchEventDetails, fetchParticipantCount, fetchAttendeeAvatars } from '../services/Parse';
 import Parse from '../services/Parse';
 
 const EventDetailPage = () => {
     const { eventId } = useParams();
     const [eventDetails, setEventDetails] = useState(null);
     const [attendeesCount, setAttendeesCount] = useState(0);
+    const [attendees, setAttendees] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showAttendeeBox, setShowAttendeeBox] = useState(false);
     const navigate = useNavigate();
 
     const currentUser = Parse.User.current();
@@ -24,6 +26,8 @@ const EventDetailPage = () => {
                 setEventDetails(details);
                 const count = await fetchParticipantCount(eventId);
                 setAttendeesCount(count);
+                const attendeeList = await fetchAttendeeAvatars(eventId);
+                setAttendees(attendeeList);
             } catch (error) {
                 console.error("Error fetching event details:", error);
             } finally {
@@ -38,6 +42,8 @@ const EventDetailPage = () => {
         try {
             const count = await fetchParticipantCount(eventId);
             setAttendeesCount(count);
+            const attendeeList = await fetchAttendeeAvatars(eventId);
+            setAttendees(attendeeList);
         } catch (error) {
             console.error("Error updating attendees count:", error);
         }
@@ -105,8 +111,33 @@ const EventDetailPage = () => {
                             <p className="event-description-text">
                                 {eventDetails.description}
                             </p>
-                            <p className="attendees">
-                                <a href="/attendees" className="attendee-count">{attendeesCount}</a> people have already joined!
+                            <p
+                                className="attendees"
+                                onMouseEnter={() => setShowAttendeeBox(true)}
+                                onMouseLeave={() => setShowAttendeeBox(false)}
+                            >
+                                <span className="attendee-count">{attendeesCount}</span> people have already joined!
+                                {showAttendeeBox && (
+                                    <div className="attendee-box">
+                                        {attendees.map((attendee, index) => (
+                                            <div className="attendee-profile-container" key={index}>
+                                                <div className="attendee-profile">
+                                                    <img
+                                                        className="attendee-avatar"
+                                                        src={attendee.avatar || "https://via.placeholder.com/50"}
+                                                        alt={attendee.username}
+                                                    />
+                                                </div>
+                                                <a
+                                                    className="attendee-username"
+                                                    href={`/profile/${attendee.userId}`}
+                                                >
+                                                    {attendee.username}
+                                                </a>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </p>
                         </div>
                         <InterestedButton

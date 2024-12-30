@@ -310,3 +310,57 @@ export const handleDelete = async (commentId, currentUserId) => {
 
 
 
+export const fetchAttendeeAvatars = async (eventId) => {
+    try {
+        // 定义 Participant 类
+        const Participant = Parse.Object.extend("Participant");
+        const query = new Parse.Query(Participant);
+
+        // 查询与指定 eventId 匹配的参加者记录
+        query.equalTo("event_id", {
+            __type: "Pointer",
+            className: "Event",
+            objectId: eventId,
+        });
+
+        // 包含用户信息
+        query.include("user_id");
+
+        const results = await query.find();
+
+        console.log("Fetched attendees:", results.map(record => {
+            const user = record.get("user_id");
+            const profilePictureFile = user?.get("profilePicture");
+            return {
+                userId: user?.id,
+                username: user?.get("username"),
+                avatar: profilePictureFile?.url(),
+            };
+        }));
+
+
+        // 映射结果，提取头像和用户名
+        return results.map(record => {
+            const user = record.get("user_id");
+
+            // 检查用户是否存在
+            if (!user) {
+                console.warn("Missing user information in participant record.");
+                return null;
+            }
+
+            // 获取头像文件（如果存在）
+            const profilePictureFile = user.get("profileImage");
+            const avatarUrl = profilePictureFile ? profilePictureFile.url() : null;
+
+            return {
+                userId: user.id,
+                username: user.get("username"),
+                avatar: avatarUrl, // 返回头像URL
+            };
+        }).filter(Boolean); // 过滤掉空结果
+    } catch (error) {
+        console.error("Error fetching attendee avatars:", error);
+        return [];
+    }
+};
