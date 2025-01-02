@@ -42,6 +42,7 @@ function Layout() {
         <Route path="/signup" element={<RequireAuth><SignUpPage /></RequireAuth>} />
         <Route path="/create-event" element={<RequireAuth><CreateEvent /></RequireAuth>} />
         <Route path="/event-detail/:eventId" element={<RequireAuth><EventDetail /></RequireAuth>} />
+        <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
         <Route path="/profile/:userId" element={<RequireAuth><ProfilePage /></RequireAuth>}
 />
 
