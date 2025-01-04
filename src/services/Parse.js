@@ -10,6 +10,33 @@ Parse.serverURL = PARSE_HOST_URL;
 
 export default Parse;
 
+export const fetchUserEvents = async (userId) => {
+    try {
+      const Event = Parse.Object.extend("Event");
+      const query = new Parse.Query(Event);
+      query.equalTo("created_by", {
+        __type: "Pointer",
+        className: "_User",
+        objectId: userId,
+      });
+
+      const results = await query.find();
+      return results.map((event) => ({
+        id: event.id,
+        title: event.get("heading"),
+        description: event.get("description"),
+        date: event.get("datetime") ? new Date(event.get("datetime")).toISOString().split("T")[0] : null,
+        city: event.get("location"),
+        image: event.get("image")?.url(),
+        petType: event.get("petType"),
+      }));
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+      return [];
+    }
+  };
+
+
 export const fetchAllEvents = async () => {
     try {
         const Event = Parse.Object.extend("Event");
@@ -145,6 +172,7 @@ export const checkUserInterest = async (eventId, userId) => {
         return false;
     }
 };
+
 
 export const handleParticipation = async (eventId, userId) => {
     console.log(`Event ID: ${eventId}, User ID: ${userId}`);
