@@ -27,34 +27,34 @@ const ProfileForm = () => {
     if (!/^[a-zA-Z0-9]{3,14}$/.test(username)) {
       return "Username must be 3-14 characters and contain only letters and numbers.";
     }
-  
+
     if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/.test(password)) {
       return "Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.";
     }
-  
+
     if (password !== repeatPassword) {
       return "Passwords do not match.";
     }
-  
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return "Invalid email format.";
     }
-  
+
     if (!/^\+[\d\s-]{7,15}$/.test(phone)) {
       return "Phone number must start with '+' and include only numbers, spaces, or hyphens.";
     }
-  
+
     if (description.length > 250) {
       return "Description cannot exceed 250 characters.";
     }
-  
+
     if (!profileImage) {
       return "Profile image is required.";
     }
-  
+
     return null;
   };
-  
+
 
   const handleSignUp = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -80,7 +80,7 @@ const ProfileForm = () => {
 
       await user.signUp();
 
-      // Redirect to home page on success
+
       navigate("/home");
     } catch (error) {
       setErrorMessage(error.message);

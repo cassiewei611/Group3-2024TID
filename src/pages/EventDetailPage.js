@@ -94,7 +94,6 @@ const EventDetailPage = () => {
                             <p className="event-author">
                                 Posted by <a href={`/profile/${eventDetails.createdBy.id}`} className="username">{eventDetails.createdBy.username}</a>
                             </p>
-
                             <h2 className="event-date">
                                 <strong>
                                     {new Date(eventDetails.datetime).toLocaleString('en-US', {
@@ -134,6 +133,8 @@ const EventDetailPage = () => {
                                                 >
                                                     {attendee.username}
                                                 </a>
+
+
                                             </div>
                                         ))}
                                     </div>

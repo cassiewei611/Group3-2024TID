@@ -36,8 +36,13 @@ const NavBar = () => {
   };
 
   const handleProfileClick = () => {
-    navigate("/profile");
+    const currentUser = Parse.User.current();
+    if (currentUser) {
+      const userId = currentUser.id;
+      navigate(`/profile/${userId}`);
+    }
   };
+
 
   return (
     <div className="navbar">

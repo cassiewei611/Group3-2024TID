@@ -4,7 +4,7 @@ import Parse from "../services/Parse";
 import { fetchUserEvents, checkUserInterest } from "../services/Parse"; // Ensure correct import paths
 import "./ProfilePage.css";
 import { useParams } from "react-router-dom";
-import  Button  from "../components/Button";  
+import Button from "../components/Button";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -16,23 +16,23 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const targetUserId = userId || Parse.User.current().id; 
+        const targetUserId = userId || Parse.User.current().id;
         const User = Parse.Object.extend("_User");
         const query = new Parse.Query(User);
         query.equalTo("objectId", targetUserId);
         const user = await query.first();
-  
+
         if (user) {
           const username = user.get("username");
           const email = user.get("email");
           const phone = user.get("phone");
           const description = user.get("description");
           const profileImage = user.get("profileImage")?.url();
-  
+
           setUserData({ username, email, phone, description, profileImage });
-  
+
           const myEvents = await fetchUserEvents(targetUserId);
-  
+
           // Fetch interested events concurrently
           const interestedEvents = await Promise.all(
             myEvents.map(async (event) => {
@@ -40,7 +40,7 @@ const ProfilePage = () => {
               return isInterested ? event : null;
             })
           );
-  
+
           setEvents({
             myEvents,
             interestedEvents: interestedEvents.filter(Boolean), // Remove null values
@@ -52,12 +52,15 @@ const ProfilePage = () => {
         setLoading(false);
       }
     };
-  
-    fetchUserData();
-  }, [userId]); 
-  
 
-  if (loading) return <div>Loading...</div>;
+    fetchUserData();
+  }, [userId]);
+
+
+  if (loading) return <div className="loading-container">
+    <div className="spinner"></div>
+    <p>Loading the profile, please wait...</p>
+  </div>
 
   return (
     <div className="profilePageContainer">
@@ -71,33 +74,33 @@ const ProfilePage = () => {
         </div>
       )}
 
-    <div className="eventsSection">
-      <div className="eventsCategory">
-        <span className="eventSectionTitle">My Events</span>
-         <div className="myEventsScroller">
-         {events.myEvents.length > 0 ? (
-           events.myEvents.map((event) => (
-          <EventCard key={event.id} event={event} />
-           ))
-           ) : (
-          <p className="noEventsMessage">No events created yet.</p>
-          )}
+      <div className="eventsSection">
+        <div className="eventsCategory">
+          <span className="eventSectionTitle">My Events</span>
+          <div className="myEventsScroller">
+            {events.myEvents.length > 0 ? (
+              events.myEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))
+            ) : (
+              <p className="noEventsMessage">No events created yet.</p>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="eventsCategory">
-        <span className="eventSectionTitle">Interested Events</span>
-        <div className="myEventsScroller">
-        {events.interestedEvents.length > 0 ? (
-          events.interestedEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))
-         ) : (
-         <p className="noEventsMessage">No events added to your interests yet.</p>
-        )}
+        <div className="eventsCategory">
+          <span className="eventSectionTitle">Interested Events</span>
+          <div className="myEventsScroller">
+            {events.interestedEvents.length > 0 ? (
+              events.interestedEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))
+            ) : (
+              <p className="noEventsMessage">No events added to your interests yet.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
   );
 };
 
