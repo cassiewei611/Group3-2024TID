@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleParticipation, checkUserInterest } from "../services/Parse"; 
+import { handleParticipation, checkUserInterest } from "../services/Parse";
 import Button from "./Button";
 import "./EventCard.css";
-import Parse from "../services/Parse"; 
+import Parse from "../services/Parse";
 
 const formatMonth = (date) => {
   return new Date(date).toLocaleString("en-US", { month: "short" }).toUpperCase();
@@ -80,7 +80,7 @@ const EventCard = ({ event }) => {
           <span className="day">{formatDay(event.date)}</span>
         </div>
         <div className="detailsContainer">
-          <h3 className="title">{event.title}</h3>
+          <h3 className="title">{event.heading}</h3>
           <p className="city">{event.city}</p>
           <p className="time">{event.time}</p>
         </div>

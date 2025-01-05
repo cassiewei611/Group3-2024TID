@@ -12,29 +12,29 @@ export default Parse;
 
 export const fetchUserEvents = async (userId) => {
     try {
-      const Event = Parse.Object.extend("Event");
-      const query = new Parse.Query(Event);
-      query.equalTo("created_by", {
-        __type: "Pointer",
-        className: "_User",
-        objectId: userId,
-      });
+        const Event = Parse.Object.extend("Event");
+        const query = new Parse.Query(Event);
+        query.equalTo("created_by", {
+            __type: "Pointer",
+            className: "_User",
+            objectId: userId,
+        });
 
-      const results = await query.find();
-      return results.map((event) => ({
-        id: event.id,
-        title: event.get("heading"),
-        description: event.get("description"),
-        date: event.get("datetime") ? new Date(event.get("datetime")).toISOString().split("T")[0] : null,
-        city: event.get("location"),
-        image: event.get("image")?.url(),
-        petType: event.get("petType"),
-      }));
+        const results = await query.find();
+        return results.map((event) => ({
+            id: event.id,
+            title: event.get("heading"),
+            description: event.get("description"),
+            date: event.get("datetime") ? new Date(event.get("datetime")).toISOString().split("T")[0] : null,
+            city: event.get("location"),
+            image: event.get("image")?.url(),
+            petType: event.get("petType"),
+        }));
     } catch (error) {
-      console.error("Error fetching user events:", error);
-      return [];
+        console.error("Error fetching user events:", error);
+        return [];
     }
-  };
+};
 
 
 export const fetchAllEvents = async () => {
@@ -119,18 +119,21 @@ export const fetchEventDetails = async (eventId) => {
             const imageFile = event.get("image");
             const imageUrl = imageFile ? imageFile.url() : null;
 
-
             const user = event.get("created_by");
-            console.log("User object fetched:", user);
+
             const userId = user ? user.id : null;
             const username = user ? user.get("username") : "Unknown";
-            console.log("Username:", username);
+
+            const datetime = event.get("datetime");
+            const date = datetime ? new Date(datetime).toISOString().split('T')[0] : null;
+            const time = datetime ? new Date(datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null;
 
             return {
                 id: event.id,
                 heading: event.get("heading"),
                 description: event.get("description"),
-                datetime: event.get("datetime"),
+                date,
+                time,
                 location: event.get("location"),
                 petType: event.get("petType"),
                 image: imageUrl,
@@ -150,22 +153,28 @@ export const fetchEventDetails = async (eventId) => {
 
 export const checkUserInterest = async (eventId, userId) => {
     try {
+        console.log("Checking interest - eventId:", eventId, "userId:", userId);
+
         const Participant = Parse.Object.extend("Participant");
         const query = new Parse.Query(Participant);
 
-        query.equalTo("event_id", {
+        const EventPointer = {
             __type: "Pointer",
             className: "Event",
             objectId: eventId,
-        });
-        query.equalTo("user_id", {
+        };
+        const UserPointer = {
             __type: "Pointer",
             className: "_User",
             objectId: userId,
-        });
+        };
 
+        query.equalTo("event_id", EventPointer);
+        query.equalTo("user_id", UserPointer);
 
         const existingRecord = await query.first();
+        console.log("Existing record for event and user:", existingRecord);
+
         return !!existingRecord;
     } catch (error) {
         console.error("Error checking user interest:", error);

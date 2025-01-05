@@ -96,15 +96,11 @@ const EventDetailPage = () => {
                             </p>
                             <h2 className="event-date">
                                 <strong>
-                                    {new Date(eventDetails.datetime).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: '2-digit',
-                                        day: '2-digit',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })}
+                                    {eventDetails.date && eventDetails.time
+                                        ? `${eventDetails.date}, ${eventDetails.time}`
+                                        : "No datetime available"}
                                 </strong>
+
                             </h2>
 
                             <p className="event-description-text">

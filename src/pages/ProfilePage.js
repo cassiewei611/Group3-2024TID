@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 import Parse from "../services/Parse";
-import { fetchUserEvents, checkUserInterest } from "../services/Parse"; // Ensure correct import paths
+import { fetchUserEvents, fetchEventDetails } from "../services/Parse"; // Ensure correct import paths
 import "./ProfilePage.css";
 import { useParams } from "react-router-dom";
-import Button from "../components/Button";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -33,11 +32,24 @@ const ProfilePage = () => {
 
           const myEvents = await fetchUserEvents(targetUserId);
 
-          // Fetch interested events concurrently
+
+          // Fetch interested events
+          const Participant = Parse.Object.extend("Participant");
+          const participantQuery = new Parse.Query(Participant);
+          participantQuery.equalTo("user_id", {
+            __type: "Pointer",
+            className: "_User",
+            objectId: targetUserId,
+          });
+          participantQuery.include("event_id"); // Include the event details in the result
+
+          const participantRecords = await participantQuery.find();
+
+          // Use fetchEventDetails to get full event details
           const interestedEvents = await Promise.all(
-            myEvents.map(async (event) => {
-              const isInterested = await checkUserInterest(event.id, targetUserId);
-              return isInterested ? event : null;
+            participantRecords.map(async (record) => {
+              const eventId = record.get("event_id").id;
+              return await fetchEventDetails(eventId);
             })
           );
 
