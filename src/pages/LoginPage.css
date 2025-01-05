@@ -19,6 +19,14 @@
   background-color: #f2f2f2;
 }
 
+.dynamic-welcome-text {
+  font-size: 20px;
+  font-weight: 400;
+  font-family: 'Quicksand', sans-serif;
+  color: #d2a679;
+  margin-bottom: 100px;
+  text-align: center;
+}
 
 .login-container {
   display: flex;

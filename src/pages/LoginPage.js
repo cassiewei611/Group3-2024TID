@@ -1,26 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Parse from "../services/Parse";
 import "./LoginPage.css";
 import Button from "../components/Button";
 
-// const lineUnderLogin = "/img/Line-under-login.svg";
 const logo = "/img/logo.png";
 const mainPicture = "/img/main-picture.jpeg";
-
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [displayedText, setDisplayedText] = useState("");
+  const [index, setIndex] = useState(0);
+
+  const fullText = "Hi there! Find pet-friendly events and connect with fellow animal lovers!";
+
+  useEffect(() => {
+    if (index < fullText.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText((prev) => prev + fullText[index]);
+        setIndex((prev) => prev + 1);
+      }, 50); // Adjust the speed by changing the delay
+      return () => clearTimeout(timer);
+    }
+  }, [index, fullText]);
 
   const handleLoginClick = async () => {
     try {
-      // Call Parse logIn function
       await Parse.User.logIn(username, password);
       console.log("Login successful");
-      navigate("/home"); // Navigate to the Home page on success
+      navigate("/home");
     } catch (error) {
       console.error("Login failed:", error.message);
       setErrorMessage("Invalid username or password. Please try again.");
@@ -28,7 +39,7 @@ const LoginPage = () => {
   };
 
   const handleSignUpClick = () => {
-    navigate("/signup"); // Navigate to the Sign Up page
+    navigate("/signup");
   };
 
   return (
@@ -39,10 +50,9 @@ const LoginPage = () => {
           <img src={logo} alt="Logo" className="login-logo" />
         </div>
         <div className="login-right-box">
+          <h2 className="dynamic-welcome-text">{displayedText}</h2>
           <div className="login-box">
             <h2 className="login-title">Login</h2>
-
-            {/* Display error message */}
             {errorMessage && <p className="error-message">{errorMessage}</p>}
 
             <div className="login-username-inputbox">
