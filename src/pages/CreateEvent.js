@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Parse from "../services/Parse";
 import { createEvent } from "../services/Parse";
 import "./CreateEvent.css";
 
 const locations = ["Copenhagen", "Aarhus", "Odense"];
 const petTypes = ["Dog", "Cat", "Bird", "Other"];
-const defaultImageURL = "/images/event1.jpg";
+const defaultImageURL = "/img/pet.webp";
 
 const ProfileForm = () => {
   const [location, setLocation] = useState("");
@@ -17,6 +18,8 @@ const ProfileForm = () => {
   const [imagePreview, setImagePreview] = useState("");
 
   const [userId, setUserId] = useState("");
+  const navigate = useNavigate();
+
   useEffect(() => {
     Parse.User.currentAsync().then((currentUser) => {
       if (currentUser) {
@@ -39,7 +42,6 @@ const ProfileForm = () => {
           `Failed to fetch default image: ${response.statusText}`
         );
       }
-
       const blob = await response.blob();
       return new Parse.File("default_image.jpg", blob);
     } catch (error) {
@@ -62,7 +64,7 @@ const ProfileForm = () => {
     }
   };
 
-  const handleSubmit = async (event, onError, onSuccess) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!location || !heading || !description || !datetime || !petType) {
@@ -78,8 +80,6 @@ const ProfileForm = () => {
         finalImage = await getDefaultImageFile(defaultImageURL);
       }
 
-      console.log("Image before saving:", finalImage);
-
       const datetimeObject = new Date(datetime);
       const eventData = {
         heading,
@@ -90,15 +90,10 @@ const ProfileForm = () => {
         image: finalImage,
       };
 
-      console.log("Final Event Data:", eventData);
-
       await createEvent(eventData, userId);
 
       alert("Event created successfully!");
 
-      if (typeof onSuccess === "function") {
-        onSuccess("Event created successfully!");
-      }
       setHeading("");
       setDescription("");
       setDatetime("");
@@ -106,18 +101,18 @@ const ProfileForm = () => {
       setPetType("");
       setImage(null);
       setImagePreview("");
+
+      setTimeout(() => {
+        navigate("/home");
+      }, 1000);
     } catch (error) {
       console.error("Error creating event:", error);
-
-      if (typeof onError === "function") {
-        onError(error);
-      }
     }
   };
 
   return (
     <div className="background-container">
-      <div className="form-container2">
+      <form className="form-container2" onSubmit={handleSubmit}>
         <div className="upload-container">
           <div
             className="upload-button"
@@ -198,10 +193,10 @@ const ProfileForm = () => {
           </select>
         </div>
 
-        <button className="submit-button" onClick={handleSubmit}>
+        <button type="submit" className="submit-button">
           Create Event
         </button>
-      </div>
+      </form>
     </div>
   );
 };

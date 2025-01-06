@@ -1,20 +1,12 @@
-// Import Parse to initialize it on app load
-import "./services/Parse";
-
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from "react-router-dom";
-import NavBar from "./components/NavBar";
+import Login from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import RequireAuth from "./components/RequireAuth";
+import ProfilePage from "./pages/ProfilePage";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import CreateEvent from "./pages/CreateEvent";
 import EventDetail from "./pages/EventDetailPage";
-import Login from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-
+import NavBar from "./components/NavBar";
 
 function App() {
   return (
@@ -33,14 +25,43 @@ function Layout() {
       {!hideNavBarPaths.includes(location.pathname) && <NavBar />}
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/create-event" element={<CreateEvent />} />
-        <Route path="/event-detail/:eventId" element={<EventDetail />} />
-
+        <Route
+          path="/home"
+          element={
+            <RequireAuth>
+              <HomePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/create-event"
+          element={
+            <RequireAuth>
+              <CreateEvent />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/event-detail/:eventId"
+          element={
+            <RequireAuth>
+              <EventDetail />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile/:userId"
+          element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </>
   );
 }
 
 export default App;
+

@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate here
 import './EventDetailPage.css';
 import EventPicture from '../components/EventPicture';
 import CommentsSection from '../components/CommentsSection';
 import InterestedButton from '../components/InterestedButton';
-import { fetchEventDetails, fetchParticipantCount } from '../services/Parse';
+import { fetchEventDetails, fetchParticipantCount, fetchAttendeeAvatars } from '../services/Parse';
 import Parse from '../services/Parse';
 
 const EventDetailPage = () => {
     const { eventId } = useParams();
     const [eventDetails, setEventDetails] = useState(null);
     const [attendeesCount, setAttendeesCount] = useState(0);
+    const [attendees, setAttendees] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showAttendeeBox, setShowAttendeeBox] = useState(false);
+    const navigate = useNavigate();
 
     const currentUser = Parse.User.current();
 
@@ -23,6 +26,8 @@ const EventDetailPage = () => {
                 setEventDetails(details);
                 const count = await fetchParticipantCount(eventId);
                 setAttendeesCount(count);
+                const attendeeList = await fetchAttendeeAvatars(eventId);
+                setAttendees(attendeeList);
             } catch (error) {
                 console.error("Error fetching event details:", error);
             } finally {
@@ -33,19 +38,26 @@ const EventDetailPage = () => {
         getEventDetails();
     }, [eventId]);
 
-
     const updateAttendeesCount = async () => {
         try {
             const count = await fetchParticipantCount(eventId);
             setAttendeesCount(count);
+            const attendeeList = await fetchAttendeeAvatars(eventId);
+            setAttendees(attendeeList);
         } catch (error) {
             console.error("Error updating attendees count:", error);
         }
     };
 
+
+    const goBack = () => {
+        navigate('/home');
+    };
+
     if (loading) {
         return (
             <div className="loading-container">
+                <div className="spinner"></div>
                 <p>Loading event details, please wait...</p>
             </div>
         );
@@ -69,6 +81,7 @@ const EventDetailPage = () => {
 
     return (
         <div className="event-detail-page">
+            <button className="back-button" onClick={goBack}>Back to Home</button> {/* Back button */}
             <div className="event-detail-page-container">
                 <div className="event-content">
                     <div className="event-picture-container">
@@ -81,25 +94,47 @@ const EventDetailPage = () => {
                             <p className="event-author">
                                 Posted by <a href={`/profile/${eventDetails.createdBy.id}`} className="username">{eventDetails.createdBy.username}</a>
                             </p>
-
                             <h2 className="event-date">
                                 <strong>
-                                    {new Date(eventDetails.datetime).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: '2-digit',
-                                        day: '2-digit',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })}
+                                    {eventDetails.date && eventDetails.time
+                                        ? `${eventDetails.date}, ${eventDetails.time}`
+                                        : "No datetime available"}
                                 </strong>
+
                             </h2>
 
                             <p className="event-description-text">
                                 {eventDetails.description}
                             </p>
-                            <p className="attendees">
-                                <a href="/attendees" className="attendee-count">{attendeesCount}</a> people have already joined!
+                            <p
+                                className="attendees"
+                                onMouseEnter={() => setShowAttendeeBox(true)}
+                                onMouseLeave={() => setShowAttendeeBox(false)}
+                            >
+                                <span className="attendee-count">{attendeesCount}</span> people have already joined!
+                                {showAttendeeBox && (
+                                    <div className="attendee-box">
+                                        {attendees.map((attendee, index) => (
+                                            <div className="attendee-profile-container" key={index}>
+                                                <div className="attendee-profile">
+                                                    <img
+                                                        className="attendee-avatar"
+                                                        src={attendee.avatar || "https://via.placeholder.com/50"}
+                                                        alt={attendee.username}
+                                                    />
+                                                </div>
+                                                <a
+                                                    className="attendee-username"
+                                                    href={`/profile/${attendee.userId}`}
+                                                >
+                                                    {attendee.username}
+                                                </a>
+
+
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </p>
                         </div>
                         <InterestedButton
@@ -111,7 +146,6 @@ const EventDetailPage = () => {
                 </div>
 
                 <CommentsSection eventId={eventId} userId={currentUser.id} />
-
             </div>
         </div>
     );

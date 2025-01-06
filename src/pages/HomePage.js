@@ -16,7 +16,7 @@ function HomePage() {
 
     loadEvents();
   }, []);
-
+//filtering
   const filteredEvents = useMemo(() => {
     return events.filter(
       (event) =>
@@ -25,7 +25,7 @@ function HomePage() {
         (!filters.petType || event.petType === filters.petType)
     );
   }, [events, filters]);
-
+//rendering 
   const handleFilterChange = useCallback(
     (newFilters) => {
       setFilters(newFilters);

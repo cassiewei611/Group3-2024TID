@@ -1,4 +1,3 @@
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -70,4 +69,46 @@
 .logo-image {
   height: 60px;
   width: auto;
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  right: 0.5%;
+  position: absolute;
+  background-color: #f8f3eb;
+  border: solid;
+  border-radius: 10px;
+  margin-left: -20px;
+  margin-top: 10px;
+  width: 100px;
+  height: auto;
+
+}
+
+.dropdown-item-profile,
+.dropdown-item-logout {
+  background-color: #6D5D4B;
+  border-radius: 10px;
+  font-family: 'quicksand', Courier, monospace;
+  font-size: large;
+  margin: 5px;
+  align-items: normal
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.navbar .username {
+  margin-top: 8px;
+  font-size: 14px;
+  font-family:'Quicksand';
+  font-weight: bold;
+  color: white;
 }
