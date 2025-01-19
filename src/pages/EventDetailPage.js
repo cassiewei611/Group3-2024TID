@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom'; // Import useNavigate here
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import './EventDetailPage.css';
 import EventPicture from '../components/EventPicture';
 import CommentsSection from '../components/CommentsSection';
 import InterestedButton from '../components/InterestedButton';
-import { fetchEventDetails, fetchParticipantCount, fetchAttendeeAvatars } from '../services/Parse';
+import { fetchEventDetails, fetchEventParticipants } from '../services/Parse';
 import Parse from '../services/Parse';
 
 const EventDetailPage = () => {
@@ -24,10 +24,10 @@ const EventDetailPage = () => {
                 setLoading(true);
                 const details = await fetchEventDetails(eventId);
                 setEventDetails(details);
-                const count = await fetchParticipantCount(eventId);
-                setAttendeesCount(count);
-                const attendeeList = await fetchAttendeeAvatars(eventId);
-                setAttendees(attendeeList);
+
+                const participants = await fetchEventParticipants(eventId);
+                setAttendeesCount(participants.length);
+                setAttendees(participants);
             } catch (error) {
                 console.error("Error fetching event details:", error);
             } finally {
@@ -40,15 +40,13 @@ const EventDetailPage = () => {
 
     const updateAttendeesCount = async () => {
         try {
-            const count = await fetchParticipantCount(eventId);
-            setAttendeesCount(count);
-            const attendeeList = await fetchAttendeeAvatars(eventId);
-            setAttendees(attendeeList);
+            const participants = await fetchEventParticipants(eventId);
+            setAttendeesCount(participants.length);
+            setAttendees(participants);
         } catch (error) {
             console.error("Error updating attendees count:", error);
         }
     };
-
 
     const goBack = () => {
         navigate('/home');
@@ -81,7 +79,7 @@ const EventDetailPage = () => {
 
     return (
         <div className="event-detail-page">
-            <button className="back-button" onClick={goBack}>Back to Home</button> {/* Back button */}
+            <button className="back-button" onClick={goBack}>Back to Home</button>
             <div className="event-detail-page-container">
                 <div className="event-content">
                     <div className="event-picture-container">
@@ -101,7 +99,6 @@ const EventDetailPage = () => {
                                         ? `${eventDetails.date}, ${eventDetails.time}`
                                         : "No datetime available"}
                                 </strong>
-
                             </h2>
 
                             <p className="event-description-text">

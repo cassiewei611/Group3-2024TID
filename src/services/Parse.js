@@ -10,39 +10,13 @@ Parse.serverURL = PARSE_HOST_URL;
 
 export default Parse;
 
-export const fetchUserEvents = async (userId) => {
-    try {
-        const Event = Parse.Object.extend("Event");
-        const query = new Parse.Query(Event);
-        query.equalTo("created_by", {
-            __type: "Pointer",
-            className: "_User",
-            objectId: userId,
-        });
-
-        const results = await query.find();
-        return results.map((event) => ({
-            id: event.id,
-            title: event.get("heading"),
-            description: event.get("description"),
-            date: event.get("datetime") ? new Date(event.get("datetime")).toISOString().split("T")[0] : null,
-            city: event.get("location"),
-            image: event.get("image")?.url(),
-            petType: event.get("petType"),
-        }));
-    } catch (error) {
-        console.error("Error fetching user events:", error);
-        return [];
-    }
-};
-
-
 export const fetchAllEvents = async () => {
     try {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
 
         const results = await query.find();
+        query.select("heading", "description", "datetime", "location", "petType", "image");
 
         return results.map(event => {
             const datetime = event.get("datetime");
@@ -233,8 +207,7 @@ export const handleParticipation = async (eventId, userId) => {
 
 
 
-
-export const fetchParticipantCount = async (eventId) => {
+export const fetchEventParticipants = async (eventId) => {
     try {
         const Participant = Parse.Object.extend("Participant");
         const query = new Parse.Query(Participant);
@@ -245,22 +218,27 @@ export const fetchParticipantCount = async (eventId) => {
             objectId: eventId,
         });
 
+
+        query.include("user_id");
+        query.select("user_id.username", "user_id.profileImage");
+
         const results = await query.find();
-        const uniqueUserIds = new Set();
 
-        results.forEach(record => {
-            const userId = record.get("user_id")?.id;
-            if (userId) {
-                uniqueUserIds.add(userId);
-            }
+
+        return results.map((record) => {
+            const user = record.get("user_id");
+            return {
+                userId: user?.id,
+                username: user?.get("username"),
+                avatar: user?.get("profileImage")?.url(),
+            };
         });
-
-        return uniqueUserIds.size;
     } catch (error) {
-        console.error("Error fetching participant count:", error);
-        return 0;
+        console.error("Error fetching event participants:", error);
+        return [];
     }
 };
+
 
 export const fetchComments = async (eventId) => {
     const query = new Parse.Query("Comment");
@@ -346,57 +324,114 @@ export const handleDelete = async (commentId, currentUserId) => {
     }
 };
 
-
-
-export const fetchAttendeeAvatars = async (eventId) => {
+export const fetchInterestedEvents = async (userId) => {
     try {
-
         const Participant = Parse.Object.extend("Participant");
-        const query = new Parse.Query(Participant);
+        const participantQuery = new Parse.Query(Participant);
 
-        query.equalTo("event_id", {
+        participantQuery.equalTo("user_id", {
             __type: "Pointer",
-            className: "Event",
-            objectId: eventId,
+            className: "_User",
+            objectId: userId,
         });
+        participantQuery.include("event_id");
+
+        const participantRecords = await participantQuery.find();
+
+        const eventIds = participantRecords.map((record) => record.get("event_id").id);
 
 
-        query.include("user_id");
+        const Event = Parse.Object.extend("Event");
+        const eventQuery = new Parse.Query(Event);
+        eventQuery.containedIn("objectId", eventIds);
+        eventQuery.include("created_by");
+        eventQuery.select("heading", "description", "datetime", "location", "image", "petType");
 
-        const results = await query.find();
+        const results = await eventQuery.find();
 
-        console.log("Fetched attendees:", results.map(record => {
-            const user = record.get("user_id");
-            const profilePictureFile = user?.get("profilePicture");
-            return {
-                userId: user?.id,
-                username: user?.get("username"),
-                avatar: profilePictureFile?.url(),
-            };
+        return results.map((event) => ({
+            id: event.id,
+            title: event.get("heading"),
+            description: event.get("description"),
+            date: event.get("datetime")
+                ? new Date(event.get("datetime")).toISOString().split("T")[0]
+                : null,
+            time: event.get("datetime")
+                ? new Date(event.get("datetime")).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                : null,
+            city: event.get("location"),
+            image: event.get("image")?.url(),
+            petType: event.get("petType"),
+            createdBy: {
+                id: event.get("created_by")?.id,
+                username: event.get("created_by")?.get("username") || "Unknown",
+            },
         }));
-
-
-
-        return results.map(record => {
-            const user = record.get("user_id");
-
-            if (!user) {
-                console.warn("Missing user information in participant record.");
-                return null;
-            }
-
-
-            const profilePictureFile = user.get("profileImage");
-            const avatarUrl = profilePictureFile ? profilePictureFile.url() : null;
-
-            return {
-                userId: user.id,
-                username: user.get("username"),
-                avatar: avatarUrl,
-            };
-        }).filter(Boolean);
     } catch (error) {
-        console.error("Error fetching attendee avatars:", error);
+        console.error("Error fetching interested events:", error);
         return [];
     }
 };
+
+export const fetchUserEvents = async (userId) => {
+    try {
+        const Event = Parse.Object.extend("Event");
+        const query = new Parse.Query(Event);
+
+        query.equalTo("created_by", {
+            __type: "Pointer",
+            className: "_User",
+            objectId: userId,
+        });
+        query.include("created_by");
+        query.select("heading", "description", "datetime", "location", "image", "petType");
+
+        const results = await query.find();
+
+        return results.map((event) => ({
+            id: event.id,
+            title: event.get("heading"),
+            description: event.get("description"),
+            date: event.get("datetime")
+                ? new Date(event.get("datetime")).toISOString().split("T")[0]
+                : null,
+            time: event.get("datetime")
+                ? new Date(event.get("datetime")).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                : null,
+            city: event.get("location"),
+            image: event.get("image")?.url(),
+            petType: event.get("petType"),
+            createdBy: {
+                id: event.get("created_by")?.id,
+                username: event.get("created_by")?.get("username") || "Unknown",
+            },
+        }));
+    } catch (error) {
+        console.error("Error fetching user events:", error);
+        return [];
+    }
+};
+
+export const fetchUserInfo = async (userId) => {
+    try {
+        const User = Parse.Object.extend("_User");
+        const query = new Parse.Query(User);
+        query.equalTo("objectId", userId);
+
+        const user = await query.first();
+        if (user) {
+            return {
+                username: user.get("username"),
+                email: user.get("email"),
+                phone: user.get("phone"),
+                description: user.get("description"),
+                profileImage: user.get("profileImage")?.url(),
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error("Error fetching user info:", error);
+        return null;
+    }
+};
+

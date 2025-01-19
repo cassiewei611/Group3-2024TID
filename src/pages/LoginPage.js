@@ -22,7 +22,7 @@ const LoginPage = () => {
       const timer = setTimeout(() => {
         setDisplayedText((prev) => prev + fullText[index]);
         setIndex((prev) => prev + 1);
-      }, 50); // Adjust the speed by changing the delay
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [index, fullText]);

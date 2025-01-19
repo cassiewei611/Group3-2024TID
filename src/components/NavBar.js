@@ -28,12 +28,21 @@ const NavBar = () => {
     setShowDropdown(!showDropdown);
   };
 
-  const handleLogOutClick = () => {
-    navigate("/");
-    setShowDropdown(false);
-    localStorage.clear();
-    sessionStorage.clear();
+  const handleLogOutClick = async () => {
+    try {
+      await Parse.User.logOut();
+
+      localStorage.clear();
+      sessionStorage.clear();
+      setShowDropdown(false);
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      alert("Failed to log out. Please try again.");
+    }
   };
+
 
   const handleProfileClick = () => {
     const currentUser = Parse.User.current();
