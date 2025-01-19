@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate here
+import { Link, useParams, useNavigate } from 'react-router-dom'; // Import useNavigate here
 import './EventDetailPage.css';
 import EventPicture from '../components/EventPicture';
 import CommentsSection from '../components/CommentsSection';
@@ -92,8 +92,9 @@ const EventDetailPage = () => {
                         <div className="event-description-text">
                             <h1 className="event-title">{eventDetails.heading}</h1>
                             <p className="event-author">
-                                Posted by <a href={`/profile/${eventDetails.createdBy.id}`} className="username">{eventDetails.createdBy.username}</a>
+                                Posted by <Link to={`/profile/${eventDetails.createdBy.id}`} className="username">{eventDetails.createdBy.username}</Link>
                             </p>
+
                             <h2 className="event-date">
                                 <strong>
                                     {eventDetails.date && eventDetails.time
@@ -123,14 +124,9 @@ const EventDetailPage = () => {
                                                         alt={attendee.username}
                                                     />
                                                 </div>
-                                                <a
-                                                    className="attendee-username"
-                                                    href={`/profile/${attendee.userId}`}
-                                                >
+                                                <Link className="attendee-username" to={`/profile/${attendee.userId}`}>
                                                     {attendee.username}
-                                                </a>
-
-
+                                                </Link>
                                             </div>
                                         ))}
                                     </div>
