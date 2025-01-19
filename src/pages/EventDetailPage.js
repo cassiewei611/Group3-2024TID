@@ -117,7 +117,7 @@ const EventDetailPage = () => {
                                                 <div className="attendee-profile">
                                                     <img
                                                         className="attendee-avatar"
-                                                        src={attendee.avatar || "https://via.placeholder.com/50"}
+                                                        src={attendee.avatar}
                                                         alt={attendee.username}
                                                     />
                                                 </div>
