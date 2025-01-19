@@ -11,21 +11,31 @@ const CommentsSection = ({ eventId, userId }) => {
     useEffect(() => {
         const loadComments = async () => {
             const loadedComments = await fetchComments(eventId);
-            setComments(loadedComments);
+            setComments(
+                loadedComments.map(comment => ({
+                    ...comment,
+                    isAuthor: comment.userId === userId,
+                }))
+            );
         };
         loadComments();
-    }, [eventId]);
+    }, [eventId, userId]);
 
     const handleSend = async () => {
         if (newComment.trim()) {
             const newCommentObj = await saveComment(eventId, userId, newComment);
             if (newCommentObj) {
-                setComments([...comments, newCommentObj]);
+                setComments([
+                    ...comments,
+                    {
+                        ...newCommentObj,
+                        isAuthor: true,
+                    },
+                ]);
                 setNewComment("");
             }
         }
     };
-
 
     const handleCommentDelete = async (commentId) => {
         const success = await handleDelete(commentId, userId);
@@ -43,7 +53,7 @@ const CommentsSection = ({ eventId, userId }) => {
                     author={comment.author}
                     text={comment.content}
                     onDelete={handleCommentDelete}
-                    isAuthor={comment.userId === userId}
+                    isAuthor={comment.isAuthor}
                 />
             ))}
             <div className="comment-input">
@@ -64,3 +74,4 @@ const CommentsSection = ({ eventId, userId }) => {
 };
 
 export default CommentsSection;
+
