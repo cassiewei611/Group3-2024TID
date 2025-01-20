@@ -34,9 +34,9 @@ function HomePage() {
     [] // 0 dependencies bc it doesn't rely on external variables
   );
 
-  const handleSaveEvent = (id) => {
+  /*const handleSaveEvent = (id) => {
     console.log(`Event ${id} saved`);
-  };
+  };*/
 
   return (
     <div className="homePageContainer">
