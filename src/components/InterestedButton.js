@@ -6,7 +6,7 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
     const [isInterested, setIsInterested] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    //  user is interested in the event?
+
     useEffect(() => {
         const fetchInterestStatus = async () => {
             try {
@@ -16,7 +16,7 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
                     return;
                 }
                 const interested = await checkUserInterest(eventId, userId);
-                console.log("Interest status fetched:", interested); 
+                console.log("Interest status fetched:", interested);
                 setIsInterested(interested);
             } catch (error) {
                 console.error("Error fetching interest status:", error);
@@ -37,7 +37,7 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
             if (updatedInterest !== null) {
                 setIsInterested(updatedInterest);
 
-                
+
                 if (updateAttendeesCount) {
                     await updateAttendeesCount();
                 }
@@ -47,12 +47,12 @@ const InterestedButton = ({ eventId, userId, updateAttendeesCount }) => {
         }
     };
 
-  
+
     if (isLoading) {
         return <button className="interested-button" disabled>Loading...</button>;
     }
 
- 
+
     return (
         <button className="interested-button" onClick={handleClick}>
             {isInterested ? (
