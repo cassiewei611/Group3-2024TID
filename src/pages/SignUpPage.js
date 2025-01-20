@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Parse from "../services/Parse";
 import "./SignUpPage.css";
@@ -16,6 +16,15 @@ const ProfileForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Cleanup preview image URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -27,6 +36,11 @@ const ProfileForm = () => {
       if (!file.type.startsWith('image/')) {
         setErrorMessage("Please upload an image file");
         return;
+      }
+      
+      // Revoke previous preview URL if it exists
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
       }
       
       setProfileImage(file);
@@ -67,6 +81,13 @@ const ProfileForm = () => {
     return null;
   };
 
+  const createDefaultACL = () => {
+    const acl = new Parse.ACL();
+    acl.setPublicReadAccess(true);    // Allow public read
+    acl.setPublicWriteAccess(false);  // Disable public write
+    return acl;
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     const validationError = validateForm();
@@ -79,29 +100,32 @@ const ProfileForm = () => {
     setErrorMessage("");
 
     try {
-      // First create the user without the profile image
+      // Create user with public read ACL
+      const userACL = createDefaultACL();
       const user = new Parse.User();
+      user.setACL(userACL);
+      
+      // Set user properties
       user.set("username", username);
       user.set("password", password);
       user.set("email", email);
       user.set("description", description);
       user.set("phone", phone);
 
-      // Sign up the user first
+      // Sign up user first
       await user.signUp();
 
-      // Now that we're authenticated, handle the file upload
+      // Handle file upload after successful signup
       if (profileImage) {
         try {
           const parseFile = new Parse.File(profileImage.name, profileImage);
           await parseFile.save();
           
-          // Get the current user and update their profile image
+          // Update user with profile image
           const currentUser = Parse.User.current();
           currentUser.set("profileImage", parseFile);
-          await currentUser.save();
+          await currentUser.save(null, { userACL });
         } catch (fileError) {
-          // If file upload fails, we still have a created user, but should notify about the image error
           console.error("File upload failed:", fileError);
           setErrorMessage("Account created but profile image upload failed. You can update it later in your profile.");
           navigate("/home");
@@ -109,7 +133,7 @@ const ProfileForm = () => {
         }
       }
 
-      // If everything succeeded, navigate to home
+      // All successful, navigate to home
       navigate("/home");
     } catch (error) {
       setErrorMessage(error.message);
@@ -136,6 +160,7 @@ const ProfileForm = () => {
           accept="image/*"
           style={{ display: "none" }}
           onChange={handleImageUpload}
+          disabled={isLoading}
         />
       </div>
 
@@ -206,4 +231,4 @@ const ProfileForm = () => {
   );
 };
 
-export default ProfileForm
+export default ProfileForm;
