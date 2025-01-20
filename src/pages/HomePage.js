@@ -31,28 +31,8 @@ function HomePage() {
       setFilters(newFilters);
       console.log("Filters Applied:", newFilters);
     },
-    [] // 0 dependenciesbc it doesn't rely on external variables
+    [] // 0 dependencies bc it doesn't rely on external variables
   );
-
- /* const handleFilterChange = useCallback(
-    (filters) => {
-      const { city, date, petType } = filters;
-      const filtered = events.filter(
-        (event) =>
-          (!city || event.city === city) &&
-          (!date || event.date === date) &&
-          (!petType || event.petType === petType)
-      );
-      setFilteredEvents(filtered);
-      // Log filtered events
-
-      console.log("Filters Applied:", filters);
-      console.log("Filtered Events:", filtered);
-
-    },
-    [events]
-  );
-  */
 
   const handleSaveEvent = (id) => {
     console.log(`Event ${id} saved`);
