@@ -14,12 +14,24 @@ const ProfileForm = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Basic file validation
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setErrorMessage("Image size must be less than 5MB");
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setErrorMessage("Please upload an image file");
+        return;
+      }
+      
       setProfileImage(file);
       setPreviewImage(URL.createObjectURL(file));
+      setErrorMessage("");
     }
   };
 
@@ -55,7 +67,6 @@ const ProfileForm = () => {
     return null;
   };
 
-
   const handleSignUp = async (e) => {
     e.preventDefault();
     const validationError = validateForm();
@@ -64,7 +75,11 @@ const ProfileForm = () => {
       return;
     }
 
+    setIsLoading(true);
+    setErrorMessage("");
+
     try {
+      // First create the user without the profile image
       const user = new Parse.User();
       user.set("username", username);
       user.set("password", password);
@@ -72,18 +87,34 @@ const ProfileForm = () => {
       user.set("description", description);
       user.set("phone", phone);
 
-      if (profileImage) {
-        const parseFile = new Parse.File(profileImage.name, profileImage);
-        await parseFile.save();
-        user.set("profileImage", parseFile);
-      }
-
+      // Sign up the user first
       await user.signUp();
 
+      // Now that we're authenticated, handle the file upload
+      if (profileImage) {
+        try {
+          const parseFile = new Parse.File(profileImage.name, profileImage);
+          await parseFile.save();
+          
+          // Get the current user and update their profile image
+          const currentUser = Parse.User.current();
+          currentUser.set("profileImage", parseFile);
+          await currentUser.save();
+        } catch (fileError) {
+          // If file upload fails, we still have a created user, but should notify about the image error
+          console.error("File upload failed:", fileError);
+          setErrorMessage("Account created but profile image upload failed. You can update it later in your profile.");
+          navigate("/home");
+          return;
+        }
+      }
 
+      // If everything succeeded, navigate to home
       navigate("/home");
     } catch (error) {
       setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,7 +126,7 @@ const ProfileForm = () => {
             {previewImage ? (
               <img src={previewImage} alt="Preview" className="preview-image" />
             ) : (
-              <span>Upload Profile Image</span>
+              <span>Upload Profile Image (max 5MB)</span>
             )}
           </div>
         </label>
@@ -119,6 +150,7 @@ const ProfileForm = () => {
           className="input-field"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          disabled={isLoading}
         />
         <label>Password:</label>
         <input
@@ -127,6 +159,7 @@ const ProfileForm = () => {
           className="input-field"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
         />
         <label>Repeat password:</label>
         <input
@@ -135,6 +168,7 @@ const ProfileForm = () => {
           className="input-field"
           value={repeatPassword}
           onChange={(e) => setRepeatPassword(e.target.value)}
+          disabled={isLoading}
         />
         <label>Description:</label>
         <textarea
@@ -143,6 +177,7 @@ const ProfileForm = () => {
           style={{ height: "80px" }}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          disabled={isLoading}
         />
         <label>E-mail:</label>
         <input
@@ -151,6 +186,7 @@ const ProfileForm = () => {
           className="input-field"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
         />
         <label>Phone number:</label>
         <input
@@ -159,14 +195,15 @@ const ProfileForm = () => {
           className="input-field"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          disabled={isLoading}
         />
       </div>
 
-      <button type="submit" className="submit-button">
-        Create user
+      <button type="submit" className="submit-button" disabled={isLoading}>
+        {isLoading ? "Creating account..." : "Create user"}
       </button>
     </form>
   );
 };
 
-export default ProfileForm;
+export default ProfileForm
