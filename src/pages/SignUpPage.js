@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import Parse from "../services/Parse";
 import "./SignUpPage.css";
 
 const ProfileForm = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -57,7 +57,7 @@ const ProfileForm = () => {
 
 
   const handleSignUp = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     const validationError = validateForm();
     if (validationError) {
       setErrorMessage(validationError);
