@@ -16,7 +16,6 @@ const ProfileForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Cleanup preview image URL when component unmounts
   useEffect(() => {
     return () => {
       if (previewImage) {
@@ -28,8 +27,8 @@ const ProfileForm = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Basic file validation
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+
+      if (file.size > 5 * 1024 * 1024) {
         setErrorMessage("Image size must be less than 5MB");
         return;
       }
@@ -37,12 +36,12 @@ const ProfileForm = () => {
         setErrorMessage("Please upload an image file");
         return;
       }
-      
-      // Revoke previous preview URL if it exists
+
+
       if (previewImage) {
         URL.revokeObjectURL(previewImage);
       }
-      
+
       setProfileImage(file);
       setPreviewImage(URL.createObjectURL(file));
       setErrorMessage("");
@@ -83,8 +82,8 @@ const ProfileForm = () => {
 
   const createDefaultACL = () => {
     const acl = new Parse.ACL();
-    acl.setPublicReadAccess(true);    // Allow public read
-    acl.setPublicWriteAccess(false);  // Disable public write
+    acl.setPublicReadAccess(true);
+    acl.setPublicWriteAccess(false);
     return acl;
   };
 
@@ -100,28 +99,28 @@ const ProfileForm = () => {
     setErrorMessage("");
 
     try {
-      // Create user with public read ACL
+
       const userACL = createDefaultACL();
       const user = new Parse.User();
       user.setACL(userACL);
-      
-      // Set user properties
+
+
       user.set("username", username);
       user.set("password", password);
       user.set("email", email);
       user.set("description", description);
       user.set("phone", phone);
 
-      // Sign up user first
+
       await user.signUp();
 
-      // Handle file upload after successful signup
+
       if (profileImage) {
         try {
           const parseFile = new Parse.File(profileImage.name, profileImage);
           await parseFile.save();
-          
-          // Update user with profile image
+
+
           const currentUser = Parse.User.current();
           currentUser.set("profileImage", parseFile);
           await currentUser.save(null, { userACL });
@@ -133,7 +132,7 @@ const ProfileForm = () => {
         }
       }
 
-      // All successful, navigate to home
+
       navigate("/home");
     } catch (error) {
       setErrorMessage(error.message);

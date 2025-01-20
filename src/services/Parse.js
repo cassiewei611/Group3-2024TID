@@ -14,9 +14,8 @@ export const fetchAllEvents = async () => {
     try {
         const Event = Parse.Object.extend("Event");
         const query = new Parse.Query(Event);
-
-        const results = await query.find();
         query.select("heading", "description", "datetime", "location", "petType", "image");
+        const results = await query.find();
 
         return results.map(event => {
             const datetime = event.get("datetime");
