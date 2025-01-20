@@ -80,7 +80,7 @@ const EventCard = ({ event }) => {
           <span className="day">{formatDay(event.date)}</span>
         </div>
         <div className="detailsContainer">
-          <h3 className="title">{event.heading}</h3>
+          <h3 className="title">{event.title}</h3>
           <p className="city">{event.city}</p>
           <p className="time">{event.time}</p>
         </div>
